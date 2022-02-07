@@ -1,0 +1,31 @@
+paths:
+    - Configuration
+    - ext_conf_template.txt
+
+filePatterns:
+    - "*.typoscript"
+    - "*.tsconfig"
+    - "*.tss"
+    - "*.tsc"
+
+sniffs:
+    -
+        class: ConfigNoCache
+    -
+        class: DeadCode
+    -
+        class: DuplicateAssignment
+    -
+        class: EmptySection
+    -
+        class: Indentation
+        parameters:
+            useSpaces: true
+            indentPerLevel: 4
+            indentConditions: false
+    -
+        class: NestingConsistency
+    -
+        class: OperatorWhitespace
+    -
+        class: RepeatingRValue

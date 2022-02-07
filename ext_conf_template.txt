@@ -1,0 +1,14 @@
+# cat=base; type=bool; label=Enabled: Enables the legacy redirect middleware (default: 1).
+enabled = 1
+
+# cat=base; type=string; label=Response match pattern: Regex to match with current request http response code to perform legacy redirect (default: [345]\d\d).
+responseMatchPattern = [345]\d\d
+
+# cat=base; type=string; label=Redirect Domain: Domain to performe the legacy redirect to.
+redirectDomain =
+
+# cat=base; type=string; label=Legacy availability match pattern: Regex to match with http response code from legacy check. On match a redirect to legacy domain will be performed (default: 2\d\d).
+redirectDomainAvailabilityMatchPattern = 2\d\d
+
+# cat=base; type=int; label=Redirect Response HTTP-Status-Code: The HTTP-Status Code used for redirects to legacy domain (default: 307).
+redirectResponseStatusCode = 307

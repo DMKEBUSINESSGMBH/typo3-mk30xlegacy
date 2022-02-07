@@ -1,0 +1,139 @@
+{
+    "name": "dmk/mk30xlegacy",
+    "description": "DMK auto redirects to legacy/mirror/stale environment.",
+    "type": "typo3-cms-extension",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Michael Wagner",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "typo3/cms-core": "^11.5"
+    },
+    "require-dev": {
+        "pimple/pimple": "^3.5.0",
+        "captainhook/captainhook": "^5.10",
+        "php-parallel-lint/php-parallel-lint": "^1.3",
+        "helmich/typo3-typoscript-lint": "^2.5",
+        "sebastian/phpcpd": "^6.0",
+        "friendsofphp/php-cs-fixer": "^3.3",
+        "phpcompatibility/php-compatibility": "^9.3.5",
+        "phpmd/phpmd": "^2.11.1",
+        "phpstan/phpstan": "^1.1",
+        "phpstan/extension-installer": "^1.1",
+        "saschaegerer/phpstan-typo3": "^1.0",
+        "phpunit/phpunit": "^9.5",
+        "phpspec/prophecy-phpunit": "^2.0.1",
+        "nimut/testing-framework": "^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DMK\\Mk30xLegacy\\": "Classes"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DMK\\Mk30xLegacy\\Tests\\": "Tests/Unit"
+        }
+    },
+    "config": {
+        "vendor-dir": ".Build/vendor",
+        "bin-dir": ".Build/bin",
+        "preferred-install": {
+            "typo3/cms": "source"
+        },
+        "allow-plugins": {
+            "typo3/cms-composer-installers": true,
+            "typo3/class-alias-loader": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-11.5": "11.5.x-dev"
+        },
+        "typo3/cms": {
+            "cms-package-dir": "{$vendor-dir}/typo3/cms",
+            "extension-key": "mk30xlegacy",
+            "web-dir": ".Build/Web",
+            "app-dir": ".Build"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "[ -e .Build/bin/captainhook ] && .Build/bin/captainhook install -f -s || echo 'CaptainHook missing, skip install.'",
+            "mkdir -p .Build/Web/typo3conf/ext/",
+            "[ -L .Build/Web/typo3conf/ext/mk30xlegacy ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/mk30xlegacy",
+            "[ -f .Build/Web/typo3conf/LocalConfiguration.php ] || cp Tests/Fixtures/LocalConfiguration.php .Build/Web/typo3conf/LocalConfiguration.php"
+        ],
+        "runqs": [
+            "@fix",
+            "@lint",
+            "@test"
+        ],
+        "lint:php": [
+            "[ -e .Build/bin/parallel-lint ] || composer update",
+            ".Build/bin/parallel-lint --exclude .Build ./"
+        ],
+        "lint:yaml": [
+            "[ -e .Build/bin/yaml-lint ] || composer update",
+            ".Build/bin/yaml-lint --ansi -n -v ./Configuration"
+        ],
+        "lint:yamldocker": [
+            "[ -x \"$(command -v docker)\" ] && docker run --rm -v \"$PWD:/yaml\" sdesbure/yamllint yamllint -f colored -c .yamllint ./Configuration"
+        ],
+        "lint:typoscript": [
+            "[ -e .Build/bin/typoscript-lint ] || composer update",
+            ".Build/bin/typoscript-lint --ansi -v --fail-on-warnings"
+        ],
+        "lint": [
+            "@lint:php",
+            "@lint:yaml",
+            "@lint:typoscript"
+        ],
+        "test:phpcs": [
+            "[ -e .Build/bin/php-cs-fixer ] || composer update",
+            ".Build/bin/php-cs-fixer fix -v --config .php-cs-fixer-risky.php --dry-run --diff",
+            ".Build/bin/php-cs-fixer fix -v --dry-run --diff"
+        ],
+        "test:phpcompatibility": [
+            "[ -e .Build/bin/phpcs ] || composer update",
+            ".Build/bin/phpcs --ignore=.Build/* -p . --standard=.Build/vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 7.4"
+        ],
+        "test:phpmd": [
+            "[ -e .Build/bin/phpmd ] || composer update",
+            ".Build/bin/phpmd ./Classes text phpmd.xml",
+            ".Build/bin/phpmd ./Tests text phpmd.xml"
+        ],
+        "test:phpstan": [
+            "[ -e .Build/bin/phpstan ] || composer update",
+            ".Build/bin/phpstan analyse -c phpstan.neon --memory-limit=512M"
+        ],
+        "test:phpcpd": [
+            "[ -e .Build/bin/phpcpd ] || composer update",
+            ".Build/bin/phpcpd ./Classes"
+        ],
+        "test:phpunit": [
+            "[ -e .Build/bin/phpunit ] || composer update",
+            ".Build/bin/phpunit --coverage-text --coverage-clover=.Build/coverage.xml -c phpunit.xml --whitelist=./Classes"
+        ],
+        "test": [
+            "@test:phpcs",
+            "@test:phpcompatibility",
+            "@test:phpmd",
+            "@test:phpstan",
+            "@test:phpcpd",
+            "@test:phpunit"
+        ],
+        "fix:phpcs": [
+            "[ -e .Build/bin/php-cs-fixer ] || composer update",
+            ".Build/bin/php-cs-fixer fix --config  .php-cs-fixer-risky.php -v",
+            ".Build/bin/php-cs-fixer fix -v"
+        ],
+        "fix": [
+            "@fix:phpcs"
+        ]
+    }
+}

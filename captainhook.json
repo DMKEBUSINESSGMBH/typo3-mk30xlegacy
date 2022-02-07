@@ -1,0 +1,70 @@
+{
+    "config": {
+        "bootstrap": ".Build/vendor/autoload.php"
+    },
+    "commit-msg": {
+        "enabled": true,
+        "actions": [
+            {
+                "action": "\\CaptainHook\\App\\Hook\\Message\\Action\\Beams"
+            },
+            {
+                "action": "\\CaptainHook\\App\\Hook\\Message\\Action\\Regex",
+                "options": {
+                    "regex": "#^(Cleanup|Bugfix|Version|\\#\\d+) .*#i",
+                    "error": "Commit message has to start with '#XXX' or 'Cleanup', 'Bugfix', 'Version'"
+                }
+            }
+        ]
+    },
+    "pre-push": {
+        "enabled": true,
+        "actions": [
+            {
+                "action": "composer test:phpcs"
+            },
+            {
+                "action": "composer test:phpmd"
+            },
+            {
+                "action": "composer test:phpstan"
+            },
+            {
+                "action": "composer test:phpcpd"
+            },
+            {
+                "action": "composer test:phpunit"
+            }
+        ]
+    },
+    "pre-commit": {
+        "enabled": true,
+        "actions": [
+            {
+                "action": "composer lint:php"
+            },
+            {
+                "action": "composer lint:yaml"
+            },
+            {
+                "action": "composer lint:typoscript"
+            }
+        ]
+    },
+    "prepare-commit-msg": {
+        "enabled": false,
+        "actions": []
+    },
+    "post-commit": {
+        "enabled": false,
+        "actions": []
+    },
+    "post-merge": {
+        "enabled": false,
+        "actions": []
+    },
+    "post-checkout": {
+        "enabled": false,
+        "actions": []
+    }
+}
