@@ -30,9 +30,12 @@ declare(strict_types=1);
 namespace DMK\Mk30xLegacy\Tests\System\Routing;
 
 use DMK\Mk30xLegacy\Domain\Manager\ConfigurationManager;
+use DMK\Mk30xLegacy\System\Event\LegacyUriMatchPreAvailabilityCheckEvent;
 use DMK\Mk30xLegacy\System\Routing\LegacyUriMatcher;
 use DMK\Mk30xLegacy\Tests\BaseUnitTestCase;
+use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
@@ -56,6 +59,10 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
      */
     private ?ObjectProphecy $requestFactory = null;
     /**
+     * @var ObjectProphecy|EventDispatcherInterface|null
+     */
+    private ?ObjectProphecy $eventDispatcher = null;
+    /**
      * @var ObjectProphecy|ServerRequestInterface|null
      */
     private ?ObjectProphecy $request = null;
@@ -70,14 +77,17 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
 
         $this->configuration = $this->prophesize(ConfigurationManager::class);
         $this->requestFactory = $this->prophesize(RequestFactory::class);
+        $this->eventDispatcher = $this->prophesize(EventDispatcherInterface::class);
         $this->matcher = new LegacyUriMatcher(
             $this->configuration->reveal(),
-            $this->requestFactory->reveal()
+            $this->requestFactory->reveal(),
+            $this->eventDispatcher->reveal()
         );
 
         $this->request = $this->prophesize(ServerRequestInterface::class);
         $this->request->getUri()->willReturn(new Uri('https://relaunch.dev/foo.html?bar=baz'));
         $this->response = $this->prophesize(ResponseInterface::class);
+        $this->eventDispatcher->dispatch(Argument::type(LegacyUriMatchPreAvailabilityCheckEvent::class))->willReturnArgument();
     }
 
     /**

@@ -30,6 +30,8 @@ declare(strict_types=1);
 namespace DMK\Mk30xLegacy\System\Routing;
 
 use DMK\Mk30xLegacy\Domain\Manager\ConfigurationManager;
+use DMK\Mk30xLegacy\System\Event\LegacyUriMatchPreAvailabilityCheckEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
@@ -43,13 +45,16 @@ class LegacyUriMatcher
 {
     private ConfigurationManager $configuration;
     private RequestFactory $requestFactory;
+    private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
         ConfigurationManager $configuration,
-        RequestFactory $requestFactory
+        RequestFactory $requestFactory,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->configuration = $configuration;
         $this->requestFactory = $requestFactory;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function isMatchableResponse(ResponseInterface $response): bool
@@ -80,9 +85,15 @@ class LegacyUriMatcher
             return $result;
         }
 
-        $legacyUri = $result->getUri()->withHost($legacyDomain);
-        $result->setUri($legacyUri);
-        $result->setAvailable($this->checkLegacyAvailability($legacyUri));
+        $result->setUri($result->getUri()->withHost($legacyDomain));
+
+        $this->eventDispatcher->dispatch(
+            new LegacyUriMatchPreAvailabilityCheckEvent($result)
+        );
+
+        if (!$result->hasAvailability()) {
+            $result->setAvailable($this->checkLegacyAvailability($result->getUri()));
+        }
 
         return $result;
     }

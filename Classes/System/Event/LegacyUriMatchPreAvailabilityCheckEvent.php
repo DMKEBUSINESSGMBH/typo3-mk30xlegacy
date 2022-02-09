@@ -27,41 +27,24 @@ declare(strict_types=1);
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-namespace DMK\Mk30xLegacy\System\Routing;
+namespace DMK\Mk30xLegacy\System\Event;
 
-use Psr\Http\Message\UriInterface;
+use DMK\Mk30xLegacy\System\Routing\LegacyUriResult;
 
 /**
  * @author Michael Wagner
  */
-class LegacyUriResult
+final class LegacyUriMatchPreAvailabilityCheckEvent
 {
-    private UriInterface $uri;
+    private LegacyUriResult $result;
 
-    private ?bool $available = null;
-
-    public function getUri(): UriInterface
+    public function __construct(LegacyUriResult $result)
     {
-        return $this->uri;
+        $this->result = $result;
     }
 
-    public function setUri(UriInterface $uri): void
+    public function getResult(): LegacyUriResult
     {
-        $this->uri = $uri;
-    }
-
-    public function hasAvailability(): bool
-    {
-        return null !== $this->available;
-    }
-
-    public function isAvailable(): bool
-    {
-        return $this->available ?? false;
-    }
-
-    public function setAvailable(bool $available): void
-    {
-        $this->available = $available;
+        return $this->result;
     }
 }

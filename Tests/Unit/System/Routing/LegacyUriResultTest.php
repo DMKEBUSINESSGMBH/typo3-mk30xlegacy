@@ -57,7 +57,12 @@ class LegacyUriResultTest extends BaseUnitTestCase
     public function setAvailableAndIsAvailable()
     {
         $result = new LegacyUriResult();
+        // initially, available is null and should be false
         $this->assertFalse($result->isAvailable());
+        // test false
+        $result->setAvailable(false);
+        $this->assertFalse($result->isAvailable());
+        // test true
         $result->setAvailable(true);
         $this->asserttrue($result->isAvailable());
     }

@@ -56,3 +56,31 @@ Use the _Site Management > Sites_ module to configure the extension.
   Redirect Response HTTP-Status-Code: 
   The HTTP-Status Code used for redirects to legacy domain.
   _(default: 307)_
+
+## Custom legacy uri manipulation
+
+You can register an event listener before the availability check is performed
+to manipulate the legacy url by your own: 
+
+```yaml
+services:
+    DMK\MyAwesomeExtension\Event\EventListener\LegacyUriMatchEventListener:
+        tags:
+            -
+                name: 'event.listener'
+                identifier: 'MyAwesomeLegacyUriMatchEventListener'
+                event: DMK\Mk30xLegacy\System\Event\LegacyUriMatchPreAvailabilityCheckEvent
+```
+
+```php
+class LegacyUriMatchEventListener
+{
+    public function __invoke(LegacyUriMatchPreAvailabilityCheckEvent $event): void
+    {
+        $uri = $event->getResult()->getUri();
+        // manipulate the url here, add query parameters for example.
+        $uri = $uri->withQuery('?legacy=redirect&'.$uri->getQuery());
+        $event->getResult()->setUri($uri);
+    }
+}
+```

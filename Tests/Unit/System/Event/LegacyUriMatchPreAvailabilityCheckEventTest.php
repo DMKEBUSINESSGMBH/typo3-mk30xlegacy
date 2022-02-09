@@ -27,41 +27,26 @@ declare(strict_types=1);
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-namespace DMK\Mk30xLegacy\System\Routing;
+namespace DMK\Mk30xLegacy\Tests\System\Routing;
 
-use Psr\Http\Message\UriInterface;
+use DMK\Mk30xLegacy\System\Event\LegacyUriMatchPreAvailabilityCheckEvent;
+use DMK\Mk30xLegacy\System\Routing\LegacyUriResult;
+use DMK\Mk30xLegacy\Tests\BaseUnitTestCase;
 
 /**
+ * LegacyUriMatchPreAvailabilityCheckEvent test.
+ *
  * @author Michael Wagner
  */
-class LegacyUriResult
+class LegacyUriMatchPreAvailabilityCheckEventTest extends BaseUnitTestCase
 {
-    private UriInterface $uri;
-
-    private ?bool $available = null;
-
-    public function getUri(): UriInterface
+    /**
+     * @test
+     */
+    public function getResult()
     {
-        return $this->uri;
-    }
-
-    public function setUri(UriInterface $uri): void
-    {
-        $this->uri = $uri;
-    }
-
-    public function hasAvailability(): bool
-    {
-        return null !== $this->available;
-    }
-
-    public function isAvailable(): bool
-    {
-        return $this->available ?? false;
-    }
-
-    public function setAvailable(bool $available): void
-    {
-        $this->available = $available;
+        $result = new LegacyUriResult();
+        $event = new LegacyUriMatchPreAvailabilityCheckEvent($result);
+        $this->assertSame($result, $event->getResult());
     }
 }
