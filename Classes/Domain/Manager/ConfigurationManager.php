@@ -58,7 +58,7 @@ class ConfigurationManager
 
     public function addSiteConfiguration(Site $site): void
     {
-        /// we must check site config first, so put site config in front of ext config.
+        // we must check site config first, so put site config in front of ext config.
         array_unshift(
             $this->configurations,
             GeneralUtility::makeInstance(
@@ -70,7 +70,7 @@ class ConfigurationManager
 
     public function addSiteLanguageConfiguration(SiteLanguage $language): void
     {
-        /// we must check site language config first, so put site config in front of ext config.
+        // we must check site language config first, so put site config in front of ext config.
         array_unshift(
             $this->configurations,
             GeneralUtility::makeInstance(
