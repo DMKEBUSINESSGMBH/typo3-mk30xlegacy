@@ -27,24 +27,11 @@ declare(strict_types=1);
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-namespace DMK\Mk30xLegacy\System\Event;
+namespace DMK\Mk30xLegacy;
 
-use DMK\Mk30xLegacy\System\Routing\UriResult;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-/**
- * @author Michael Wagner
- */
-final class LegacyUriMatchPreAvailabilityCheckEvent
-{
-    private UriResult $result;
-
-    public function __construct(UriResult $result)
-    {
-        $this->result = $result;
-    }
-
-    public function getResult(): UriResult
-    {
-        return $this->result;
-    }
-}
+return function (ContainerConfigurator $container, ContainerBuilder $containerBuilder) {
+    $containerBuilder->addCompilerPass(new DependencyInjection\MatcherRegistryPass());
+};

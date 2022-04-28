@@ -27,11 +27,11 @@ declare(strict_types=1);
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-namespace DMK\Mk30xLegacy\Tests\System\Routing;
+namespace DMK\Mk30xLegacy\Tests\System\Routing\Matcher;
 
 use DMK\Mk30xLegacy\Domain\Manager\ConfigurationManager;
 use DMK\Mk30xLegacy\System\Event\LegacyUriMatchPreAvailabilityCheckEvent;
-use DMK\Mk30xLegacy\System\Routing\LegacyUriMatcher;
+use DMK\Mk30xLegacy\System\Routing\Matcher\LegacyUriMatcher;
 use DMK\Mk30xLegacy\Tests\BaseUnitTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -135,7 +135,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
         $this->configuration->getRedirectDomain()->willReturn('relaunch.dev');
         $this->requestFactory->request()->shouldNotBeCalled();
 
-        $result = $this->matcher->matchRequest($this->request->reveal());
+        $result = $this->matcher->matchRequest($this->request->reveal(), $this->response->reveal());
 
         $this->assertFalse($result->isAvailable());
         $this->assertSame($this->request->reveal()->getUri(), $result->getUri());
@@ -151,7 +151,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
             ->willThrow($this->prophesize(Throwable::class)->reveal())->shouldBeCalledOnce();
         $this->configuration->getRedirectDomainAvailabilityMatchPattern()->shouldNotBeCalled();
 
-        $result = $this->matcher->matchRequest($this->request->reveal());
+        $result = $this->matcher->matchRequest($this->request->reveal(), $this->response->reveal());
 
         $this->assertFalse($result->isAvailable());
         $this->assertSame('https://old.dev/foo.html?bar=baz', (string) $result->getUri());
@@ -169,7 +169,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
             ->willReturn($subResponse->reveal())->shouldBeCalledOnce();
         $this->configuration->getRedirectDomainAvailabilityMatchPattern()->willReturn('200')->shouldBeCalledOnce();
 
-        $result = $this->matcher->matchRequest($this->request->reveal());
+        $result = $this->matcher->matchRequest($this->request->reveal(), $this->response->reveal());
 
         $this->assertFalse($result->isAvailable());
         $this->assertSame('https://old.dev/foo.html?bar=baz', (string) $result->getUri());
@@ -187,7 +187,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
             ->willReturn($subResponse->reveal())->shouldBeCalledOnce();
         $this->configuration->getRedirectDomainAvailabilityMatchPattern()->willReturn('200')->shouldBeCalledOnce();
 
-        $result = $this->matcher->matchRequest($this->request->reveal());
+        $result = $this->matcher->matchRequest($this->request->reveal(), $this->response->reveal());
 
         $this->assertTrue($result->isAvailable());
         $this->assertSame('https://old.dev/foo.html?bar=baz', (string) $result->getUri());

@@ -57,20 +57,42 @@ Use the _Site Management > Sites_ module to configure the extension.
   The HTTP-Status Code used for redirects to legacy domain.
   _(default: 307)_
 
-## Custom legacy uri manipulation
+## Add Custom Matcher
 
-You can register an event listener before the availability check is performed
-to manipulate the legacy url by your own: 
+The redirect middleware uses a matcher registry, so custom matchers can be developed.
 
+```php
+class CustomMatcher implements MatcherInterface
+{
+    public function isMatchableResponse(ResponseInterface $response): bool
+    {
+        // check here if this matcher is enabled for the typo3 response!
+        return true;
+    }
+
+    public function matchRequest(ServerRequestInterface $request, ResponseInterface $response): UriResult
+    {
+        $result = new UriResult();
+        // add your custom stuff here,
+        // to create an uri result (for redirect)
+        // depending on the request and response
+        return $result
+    }
+}
+```
+Add the custom matcher in your `Services.yaml`:
 ```yaml
-services:
-    DMK\MyAwesomeExtension\Event\EventListener\LegacyUriMatchEventListener:
+    DMK\MyAwesomeExtension\Routing\Matcher\CustomMatcher:
         tags:
             -
-                name: 'event.listener'
-                identifier: 'MyAwesomeLegacyUriMatchEventListener'
-                event: DMK\Mk30xLegacy\System\Event\LegacyUriMatchPreAvailabilityCheckEvent
+                name: 'mk30xlegacy.routing.matcher'
+                priority: 100
 ```
+
+## Custom legacy uri manipulation
+
+You can register an event listener before the availability check 
+of the LegacyUriMatcher is performed, to manipulate the legacy url by your own:
 
 ```php
 class LegacyUriMatchEventListener
@@ -83,4 +105,14 @@ class LegacyUriMatchEventListener
         $event->getResult()->setUri($uri);
     }
 }
+```
+Add the custom listener in your `Services.yaml`:
+```yaml
+services:
+    DMK\MyAwesomeExtension\Event\EventListener\LegacyUriMatchEventListener:
+        tags:
+            -
+                name: 'event.listener'
+                identifier: 'MyAwesomeLegacyUriMatchEventListener'
+                event: DMK\Mk30xLegacy\System\Event\LegacyUriMatchPreAvailabilityCheckEvent
 ```

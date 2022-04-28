@@ -34,7 +34,7 @@ use Psr\Http\Message\UriInterface;
 /**
  * @author Michael Wagner
  */
-class LegacyUriResult
+class UriResult
 {
     private UriInterface $uri;
 

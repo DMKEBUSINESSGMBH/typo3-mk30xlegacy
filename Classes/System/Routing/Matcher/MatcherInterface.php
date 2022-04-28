@@ -27,24 +27,23 @@ declare(strict_types=1);
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-namespace DMK\Mk30xLegacy\System\Event;
+namespace DMK\Mk30xLegacy\System\Routing\Matcher;
 
 use DMK\Mk30xLegacy\System\Routing\UriResult;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @author Michael Wagner
  */
-final class LegacyUriMatchPreAvailabilityCheckEvent
+interface MatcherInterface
 {
-    private UriResult $result;
+    public function isMatchableResponse(
+        ResponseInterface $response
+    ): bool;
 
-    public function __construct(UriResult $result)
-    {
-        $this->result = $result;
-    }
-
-    public function getResult(): UriResult
-    {
-        return $this->result;
-    }
+    public function matchRequest(
+        ServerRequestInterface $request,
+        ResponseInterface $response
+    ): UriResult;
 }

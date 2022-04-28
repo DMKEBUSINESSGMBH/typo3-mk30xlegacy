@@ -30,7 +30,7 @@ declare(strict_types=1);
 return [
     'frontend' => [
         'dmk/mk30xlegacy/legacy-redirect' => [
-            'target' => \DMK\Mk30xLegacy\Middleware\LegacyRedirectMiddleware::class,
+            'target' => \DMK\Mk30xLegacy\Middleware\RedirectMiddleware::class,
             'before' => [
                 'typo3/cms-frontend/page-resolver',
             ],
