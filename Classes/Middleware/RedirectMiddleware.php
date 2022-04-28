@@ -30,7 +30,7 @@ declare(strict_types=1);
 namespace DMK\Mk30xLegacy\Middleware;
 
 use DMK\Mk30xLegacy\Domain\Manager\ConfigurationManager;
-use DMK\Mk30xLegacy\System\Routing\LegacyUriMatcher;
+use DMK\Mk30xLegacy\System\Routing\Matcher\MatcherRegistry;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -42,22 +42,22 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
 /**
- * LegacyRedirect middleware.
+ * Redirect middleware.
  *
  * @author Michael Wagner
  */
-class LegacyRedirectMiddleware implements MiddlewareInterface, LoggerAwareInterface
+class RedirectMiddleware implements MiddlewareInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    private LegacyUriMatcher $matcher;
+    private MatcherRegistry $matcher;
     private ConfigurationManager $configuration;
 
     public function __construct(
-        LegacyUriMatcher $legacyUriMatcher,
+        MatcherRegistry $matcher,
         ConfigurationManager $configuration
     ) {
-        $this->matcher = $legacyUriMatcher;
+        $this->matcher = $matcher;
         $this->configuration = $configuration;
     }
 
@@ -82,8 +82,7 @@ class LegacyRedirectMiddleware implements MiddlewareInterface, LoggerAwareInterf
             return $response;
         }
 
-        $result = $this->matcher->matchRequest($request);
-
+        $result = $this->matcher->matchRequest($request, $response);
         if ($result->isAvailable()) {
             if (null !== $this->logger) {
                 $this->logger->info(
@@ -100,7 +99,7 @@ class LegacyRedirectMiddleware implements MiddlewareInterface, LoggerAwareInterf
             return new RedirectResponse(
                 $result->getUri(),
                 $this->configuration->getRedirectResponseStatusCode(),
-                ['X-Redirect-By' => 'DMK.Mk30xLegacy.Middleware.LegacyRedirect']
+                ['X-Redirect-By' => 'DMK.Mk30xLegacy.Middleware.Redirect']
             );
         }
 
@@ -110,7 +109,6 @@ class LegacyRedirectMiddleware implements MiddlewareInterface, LoggerAwareInterf
                 [
                     'request_uri' => (string) $request->getUri(),
                     'response_status' => $response->getStatusCode(),
-                    'legacy_redirect_uri' => (string) $result->getUri(),
                     'legacy_redirect_available' => false,
                 ]
             );

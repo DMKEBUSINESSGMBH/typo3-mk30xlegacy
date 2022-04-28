@@ -11,5 +11,11 @@ services:
     DMK\Mk30xLegacy\Domain\Manager\ConfigurationManager:
         public: true
 
-    DMK\Mk30xLegacy\Middleware\LegacyRedirect:
+    DMK\Mk30xLegacy\Middleware\RedirectMiddleware:
         public: true
+
+    DMK\Mk30xLegacy\System\Routing\Matcher\LegacyUriMatcher:
+        tags:
+            -
+                name: 'mk30xlegacy.routing.matcher'
+                priority: 200

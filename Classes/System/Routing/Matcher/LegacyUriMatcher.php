@@ -27,10 +27,11 @@ declare(strict_types=1);
  * This copyright notice MUST APPEAR in all copies of the script!
  */
 
-namespace DMK\Mk30xLegacy\System\Routing;
+namespace DMK\Mk30xLegacy\System\Routing\Matcher;
 
 use DMK\Mk30xLegacy\Domain\Manager\ConfigurationManager;
 use DMK\Mk30xLegacy\System\Event\LegacyUriMatchPreAvailabilityCheckEvent;
+use DMK\Mk30xLegacy\System\Routing\UriResult;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -41,7 +42,7 @@ use TYPO3\CMS\Core\Http\RequestFactory;
 /**
  * @author Michael Wagner
  */
-class LegacyUriMatcher
+class LegacyUriMatcher implements MatcherInterface
 {
     private ConfigurationManager $configuration;
     private RequestFactory $requestFactory;
@@ -73,9 +74,9 @@ class LegacyUriMatcher
         );
     }
 
-    public function matchRequest(ServerRequestInterface $request): LegacyUriResult
+    public function matchRequest(ServerRequestInterface $request, ResponseInterface $response): UriResult
     {
-        $result = new LegacyUriResult();
+        $result = new UriResult();
         $result->setUri($request->getUri());
 
         $legacyDomain = $this->configuration->getRedirectDomain();

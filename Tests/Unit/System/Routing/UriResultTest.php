@@ -29,16 +29,16 @@ declare(strict_types=1);
 
 namespace DMK\Mk30xLegacy\Tests\System\Routing;
 
-use DMK\Mk30xLegacy\System\Routing\LegacyUriResult;
+use DMK\Mk30xLegacy\System\Routing\UriResult;
 use DMK\Mk30xLegacy\Tests\BaseUnitTestCase;
 use Psr\Http\Message\UriInterface;
 
 /**
- * LegacyUriResult test.
+ * UriResult test.
  *
  * @author Michael Wagner
  */
-class LegacyUriResultTest extends BaseUnitTestCase
+class UriResultTest extends BaseUnitTestCase
 {
     /**
      * @test
@@ -46,7 +46,7 @@ class LegacyUriResultTest extends BaseUnitTestCase
     public function setUriAndGetUri()
     {
         $uri = $this->prophesize(UriInterface::class)->reveal();
-        $result = new LegacyUriResult();
+        $result = new UriResult();
         $result->setUri($uri);
         $this->assertSame($uri, $result->getUri());
     }
@@ -56,7 +56,7 @@ class LegacyUriResultTest extends BaseUnitTestCase
      */
     public function setAvailableAndIsAvailable()
     {
-        $result = new LegacyUriResult();
+        $result = new UriResult();
         // initially, available is null and should be false
         $this->assertFalse($result->isAvailable());
         // test false

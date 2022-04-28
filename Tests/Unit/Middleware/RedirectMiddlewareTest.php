@@ -30,9 +30,9 @@ declare(strict_types=1);
 namespace DMK\Mk30xLegacy\Tests\Middleware;
 
 use DMK\Mk30xLegacy\Domain\Manager\ConfigurationManager;
-use DMK\Mk30xLegacy\Middleware\LegacyRedirectMiddleware;
-use DMK\Mk30xLegacy\System\Routing\LegacyUriMatcher;
-use DMK\Mk30xLegacy\System\Routing\LegacyUriResult;
+use DMK\Mk30xLegacy\Middleware\RedirectMiddleware;
+use DMK\Mk30xLegacy\System\Routing\Matcher\MatcherRegistry;
+use DMK\Mk30xLegacy\System\Routing\UriResult;
 use DMK\Mk30xLegacy\Tests\BaseUnitTestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
@@ -45,15 +45,15 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
 /**
- * LegacyUriMatcher test.
+ * RedirectMiddleware test.
  *
  * @author Michael Wagner
  */
-class LegacyRedirectMiddlewareTest extends BaseUnitTestCase
+class RedirectMiddlewareTest extends BaseUnitTestCase
 {
-    private ?LegacyRedirectMiddleware $middleware = null;
+    private ?RedirectMiddleware $middleware = null;
     /**
-     * @var LegacyUriMatcher|ObjectProphecy|null
+     * @var MatcherRegistry|ObjectProphecy|null
      */
     private ?ObjectProphecy $matcher = null;
     /**
@@ -81,11 +81,11 @@ class LegacyRedirectMiddlewareTest extends BaseUnitTestCase
     {
         parent::setUp();
 
-        $this->matcher = $this->prophesize(LegacyUriMatcher::class);
+        $this->matcher = $this->prophesize(MatcherRegistry::class);
         $this->configuration = $this->prophesize(ConfigurationManager::class);
         $this->logger = $this->prophesize(LoggerInterface::class);
 
-        $this->middleware = new LegacyRedirectMiddleware(
+        $this->middleware = new RedirectMiddleware(
             $this->matcher->reveal(),
             $this->configuration->reveal()
         );
@@ -137,23 +137,21 @@ class LegacyRedirectMiddlewareTest extends BaseUnitTestCase
      */
     public function processWithMatchedButUnavailableResponse()
     {
-        $result = new LegacyUriResult();
+        $result = new UriResult();
         $result->setAvailable(false);
-        $result->setUri(new Uri('/foo.bar'));
 
         $this->request->getUri()->willReturn(new Uri('/bar.baz'))->shouldBeCalledOnce();
         $this->response->getStatusCode()->willReturn(815)->shouldBeCalledOnce();
 
         $this->configuration->isEnabled()->willReturn(true)->shouldBeCalledOnce();
         $this->matcher->isMatchableResponse($this->response->reveal())->willReturn(true)->shouldBeCalledOnce();
-        $this->matcher->matchRequest($this->request->reveal())->willReturn($result)->shouldBeCalledOnce();
+        $this->matcher->matchRequest($this->request->reveal(), $this->response->reveal())->willReturn($result)->shouldBeCalledOnce();
         $this->configuration->getRedirectResponseStatusCode()->shouldNotBeCalled();
         $this->logger->debug(
             'No available legacy found for matchable legacy redirect response.',
             [
                 'request_uri' => '/bar.baz',
                 'response_status' => 815,
-                'legacy_redirect_uri' => '/foo.bar',
                 'legacy_redirect_available' => false,
             ]
         )->shouldBeCalledOnce();
@@ -169,7 +167,7 @@ class LegacyRedirectMiddlewareTest extends BaseUnitTestCase
      */
     public function processWithMatchedAndAvailableResponse()
     {
-        $result = new LegacyUriResult();
+        $result = new UriResult();
         $result->setAvailable(true);
         $result->setUri(new Uri('/foo.bar'));
 
@@ -178,7 +176,7 @@ class LegacyRedirectMiddlewareTest extends BaseUnitTestCase
 
         $this->configuration->isEnabled()->willReturn(true)->shouldBeCalledOnce();
         $this->matcher->isMatchableResponse($this->response->reveal())->willReturn(true)->shouldBeCalledOnce();
-        $this->matcher->matchRequest($this->request->reveal())->willReturn($result)->shouldBeCalledOnce();
+        $this->matcher->matchRequest($this->request->reveal(), $this->response->reveal())->willReturn($result)->shouldBeCalledOnce();
         $this->configuration->getRedirectResponseStatusCode()->willReturn(204)->shouldBeCalledOnce();
         $this->logger->info(
             'Available and matchable legacy redirect response found.',
@@ -193,7 +191,7 @@ class LegacyRedirectMiddlewareTest extends BaseUnitTestCase
         $response = $this->middleware->process($this->request->reveal(), $this->handler->reveal());
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertEquals(['/foo.bar'], $response->getHeader('location'));
-        $this->assertEquals(['DMK.Mk30xLegacy.Middleware.LegacyRedirect'], $response->getHeader('X-Redirect-By'));
+        $this->assertEquals(['DMK.Mk30xLegacy.Middleware.Redirect'], $response->getHeader('X-Redirect-By'));
         $this->assertEquals(204, $response->getStatusCode());
     }
 }
