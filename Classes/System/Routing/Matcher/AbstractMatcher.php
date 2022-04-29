@@ -31,13 +31,12 @@ namespace DMK\Mk30xLegacy\System\Routing\Matcher;
 
 use DMK\Mk30xLegacy\Domain\Manager\ConfigurationManager;
 use DMK\Mk30xLegacy\System\Event\UriMatchPreAvailabilityCheckEvent;
+use DMK\Mk30xLegacy\System\Http\RequestFactory;
 use DMK\Mk30xLegacy\System\Routing\UriResult;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
-use Throwable;
-use TYPO3\CMS\Core\Http\RequestFactory;
 
 /**
  * @author Michael Wagner
@@ -113,8 +112,8 @@ abstract class AbstractMatcher implements MatcherInterface
         UriInterface $uri
     ): bool {
         try {
-            $response = $this->requestFactory->request((string) $uri, 'HEAD');
-        } catch (Throwable $error) {
+            $response = $this->requestFactory->requestAvailability($uri);
+        } catch (\Throwable $error) {
             return false;
         }
         $pattern = $this->getConfiguration()->getRedirectDomainAvailabilityMatchPattern();

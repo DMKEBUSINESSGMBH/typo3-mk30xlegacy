@@ -29,6 +29,7 @@ declare(strict_types=1);
 
 namespace DMK\Mk30xLegacy\Tests\System\Routing\Matcher;
 
+use DMK\Mk30xLegacy\System\Http\RequestFactory;
 use DMK\Mk30xLegacy\System\Routing\Matcher\MatcherInterface;
 use DMK\Mk30xLegacy\System\Routing\Matcher\MatcherRegistry;
 use DMK\Mk30xLegacy\System\Routing\UriResult;
@@ -45,6 +46,10 @@ use Psr\Http\Message\ServerRequestInterface;
 class MatcherRegistryTest extends BaseUnitTestCase
 {
     private ?MatcherRegistry $registry = null;
+    /**
+     * @var ObjectProphecy|RequestFactory|null
+     */
+    private ?ObjectProphecy $requestFactory = null;
     /**
      * @var ServerRequestInterface|ObjectProphecy|null
      */
@@ -69,7 +74,9 @@ class MatcherRegistryTest extends BaseUnitTestCase
         $this->request = $this->prophesize(ServerRequestInterface::class);
         $this->response = $this->prophesize(ResponseInterface::class);
 
-        $this->registry = new MatcherRegistry();
+        $this->requestFactory = $this->prophesize(RequestFactory::class);
+
+        $this->registry = new MatcherRegistry($this->requestFactory->reveal());
         $this->matherP200 = $this->prophesize(MatcherInterface::class);
         $this->registry->addMatcher($this->matherP200->reveal(), 200);
         $this->matherP100 = $this->prophesize(MatcherInterface::class);
@@ -79,8 +86,26 @@ class MatcherRegistryTest extends BaseUnitTestCase
     /**
      * @test
      */
+    public function isMatchableResponseReturnsFalseForAvailabilityRequest()
+    {
+        $this->requestFactory->isAvailabilityRequest($this->request->reveal())->willReturn(true);
+        $this->matherP100
+            ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+            ->shouldNotBeCalled();
+        $this->matherP200
+            ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+            ->shouldNotBeCalled();
+        $this->assertFalse(
+            $this->registry->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+        );
+    }
+
+    /**
+     * @test
+     */
     public function isMatchableResponseReturnsFalse()
     {
+        $this->requestFactory->isAvailabilityRequest($this->request->reveal())->willReturn(false);
         $this->matherP100
             ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
             ->willReturn(false)
@@ -99,6 +124,7 @@ class MatcherRegistryTest extends BaseUnitTestCase
      */
     public function isMatchableResponseReturnsTrueForFirstMatcher()
     {
+        $this->requestFactory->isAvailabilityRequest($this->request->reveal())->willReturn(false);
         $this->matherP100
             ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
             ->willReturn(true)
@@ -116,6 +142,7 @@ class MatcherRegistryTest extends BaseUnitTestCase
      */
     public function isMatchableResponseReturnsTrueForLastMatcher()
     {
+        $this->requestFactory->isAvailabilityRequest($this->request->reveal())->willReturn(false);
         $this->matherP100
             ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
             ->willReturn(false)
