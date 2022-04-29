@@ -31,6 +31,7 @@ namespace DMK\Mk30xLegacy\Tests\System\Routing\Matcher;
 
 use DMK\Mk30xLegacy\Domain\Manager\ConfigurationManager;
 use DMK\Mk30xLegacy\System\Event\UriMatchPreAvailabilityCheckEvent;
+use DMK\Mk30xLegacy\System\Http\RequestFactory;
 use DMK\Mk30xLegacy\System\Routing\Matcher\LegacyUriMatcher;
 use DMK\Mk30xLegacy\Tests\BaseUnitTestCase;
 use Prophecy\Argument;
@@ -39,7 +40,6 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
-use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Http\Uri;
 
 /**
@@ -133,7 +133,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
     public function matchRequestForSameDomain()
     {
         $this->configuration->getRedirectDomain()->willReturn('relaunch.dev');
-        $this->requestFactory->request()->shouldNotBeCalled();
+        $this->requestFactory->requestAvailability()->shouldNotBeCalled();
 
         $result = $this->matcher->matchRequest($this->request->reveal(), $this->response->reveal());
 
@@ -146,7 +146,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
     public function matchRequestForUnavailable()
     {
         $this->configuration->getRedirectDomain()->willReturn('old.dev');
-        $this->requestFactory->request('https://old.dev/foo.html?bar=baz', 'HEAD')
+        $this->requestFactory->requestAvailability(new Uri('https://old.dev/foo.html?bar=baz'))
             ->willThrow($this->prophesize(Throwable::class)->reveal())->shouldBeCalledOnce();
         $this->configuration->getRedirectDomainAvailabilityMatchPattern()->shouldNotBeCalled();
 
@@ -164,7 +164,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
         $this->configuration->getRedirectDomain()->willReturn('old.dev');
         $subResponse = $this->prophesize(ResponseInterface::class);
         $subResponse->getStatusCode()->willReturn(404)->shouldBeCalledOnce();
-        $this->requestFactory->request('https://old.dev/foo.html?bar=baz', 'HEAD')
+        $this->requestFactory->requestAvailability(new Uri('https://old.dev/foo.html?bar=baz'))
             ->willReturn($subResponse->reveal())->shouldBeCalledOnce();
         $this->configuration->getRedirectDomainAvailabilityMatchPattern()->willReturn('200')->shouldBeCalledOnce();
 
@@ -182,7 +182,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
         $this->configuration->getRedirectDomain()->willReturn('old.dev');
         $subResponse = $this->prophesize(ResponseInterface::class);
         $subResponse->getStatusCode()->willReturn(200)->shouldBeCalledOnce();
-        $this->requestFactory->request('https://old.dev/foo.html?bar=baz', 'HEAD')
+        $this->requestFactory->requestAvailability(new Uri('https://old.dev/foo.html?bar=baz'))
             ->willReturn($subResponse->reveal())->shouldBeCalledOnce();
         $this->configuration->getRedirectDomainAvailabilityMatchPattern()->willReturn('200')->shouldBeCalledOnce();
 

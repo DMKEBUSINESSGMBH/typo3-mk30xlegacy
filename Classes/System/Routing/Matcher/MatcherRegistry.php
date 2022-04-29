@@ -29,6 +29,7 @@ declare(strict_types=1);
 
 namespace DMK\Mk30xLegacy\System\Routing\Matcher;
 
+use DMK\Mk30xLegacy\System\Http\RequestFactory;
 use DMK\Mk30xLegacy\System\Routing\UriResult;
 use Generator;
 use Psr\Http\Message\ResponseInterface;
@@ -44,6 +45,14 @@ class MatcherRegistry implements MatcherInterface
      */
     private array $matcher = [];
 
+    private RequestFactory $requestFactory;
+
+    public function __construct(
+        RequestFactory $requestFactory
+    ) {
+        $this->requestFactory = $requestFactory;
+    }
+
     public function addMatcher(MatcherInterface $matcher, int $priority = 0): void
     {
         if (!array_key_exists($priority, $this->matcher)) {
@@ -57,6 +66,10 @@ class MatcherRegistry implements MatcherInterface
         ResponseInterface $response,
         ServerRequestInterface $request
     ): bool {
+        if ($this->requestFactory->isAvailabilityRequest($request)) {
+            return false;
+        }
+
         foreach ($this->getFlattenMatchers() as $matcher) {
             if ($matcher->isMatchableResponse($response, $request)) {
                 return true;
