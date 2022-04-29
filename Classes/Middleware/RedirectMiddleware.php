@@ -78,7 +78,7 @@ class RedirectMiddleware implements MiddlewareInterface, LoggerAwareInterface
             return $response;
         }
 
-        if (!$this->matcher->isMatchableResponse($response)) {
+        if (!$this->matcher->isMatchableResponse($response, $request)) {
             return $response;
         }
 

@@ -92,12 +92,12 @@ Add the custom matcher in your `Services.yaml`:
 ## Custom legacy uri manipulation
 
 You can register an event listener before the availability check 
-of the LegacyUriMatcher is performed, to manipulate the legacy url by your own:
-
+of the LegacyUriMatcher is performed, to manipulate the legacy url by your own
+_(we recommend to use a custom matcher instead!)_:
 ```php
 class LegacyUriMatchEventListener
 {
-    public function __invoke(LegacyUriMatchPreAvailabilityCheckEvent $event): void
+    public function __invoke(UriMatchPreAvailabilityCheckEvent $event): void
     {
         $uri = $event->getResult()->getUri();
         // manipulate the url here, add query parameters for example.
@@ -114,5 +114,5 @@ services:
             -
                 name: 'event.listener'
                 identifier: 'MyAwesomeLegacyUriMatchEventListener'
-                event: DMK\Mk30xLegacy\System\Event\LegacyUriMatchPreAvailabilityCheckEvent
+                event: DMK\Mk30xLegacy\System\Event\UriMatchPreAvailabilityCheckEvent
 ```

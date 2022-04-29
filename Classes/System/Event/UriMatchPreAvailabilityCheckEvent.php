@@ -34,7 +34,7 @@ use DMK\Mk30xLegacy\System\Routing\UriResult;
 /**
  * @author Michael Wagner
  */
-final class LegacyUriMatchPreAvailabilityCheckEvent
+final class UriMatchPreAvailabilityCheckEvent
 {
     private UriResult $result;
 
