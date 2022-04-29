@@ -29,89 +29,41 @@ declare(strict_types=1);
 
 namespace DMK\Mk30xLegacy\System\Routing\Matcher;
 
-use DMK\Mk30xLegacy\Domain\Manager\ConfigurationManager;
-use DMK\Mk30xLegacy\System\Event\LegacyUriMatchPreAvailabilityCheckEvent;
 use DMK\Mk30xLegacy\System\Routing\UriResult;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UriInterface;
-use Throwable;
-use TYPO3\CMS\Core\Http\RequestFactory;
 
 /**
  * @author Michael Wagner
  */
-class LegacyUriMatcher implements MatcherInterface
+class LegacyUriMatcher extends AbstractMatcher implements MatcherInterface
 {
-    private ConfigurationManager $configuration;
-    private RequestFactory $requestFactory;
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(
-        ConfigurationManager $configuration,
-        RequestFactory $requestFactory,
-        EventDispatcherInterface $eventDispatcher
-    ) {
-        $this->configuration = $configuration;
-        $this->requestFactory = $requestFactory;
-        $this->eventDispatcher = $eventDispatcher;
-    }
-
-    public function isMatchableResponse(ResponseInterface $response): bool
-    {
-        $legacyDomain = $this->configuration->getRedirectDomain();
+    public function isMatchableResponse(
+        ResponseInterface $response,
+        ServerRequestInterface $request
+    ): bool {
+        $legacyDomain = $this->getConfiguration()->getRedirectDomain();
 
         if (empty($legacyDomain)) {
             return false;
         }
 
-        $pattern = $this->configuration->getResponseMatchPattern();
-
-        return 1 === preg_match(
-            '#^'.$pattern.'$#',
-            (string) $response->getStatusCode()
-        );
+        return parent::isMatchableResponse($response, $request);
     }
 
-    public function matchRequest(ServerRequestInterface $request, ResponseInterface $response): UriResult
+    protected function createResultForRequest(ServerRequestInterface $request, ResponseInterface $response): ?UriResult
     {
-        $result = new UriResult();
-        $result->setUri($request->getUri());
-
-        $legacyDomain = $this->configuration->getRedirectDomain();
+        $uri = $request->getUri();
+        $legacyDomain = $this->getConfiguration()->getRedirectDomain();
 
         // legacy domain has to be different from current domain!
-        if ($legacyDomain === $result->getUri()->getHost()) {
-            return $result;
+        if ($legacyDomain === $uri->getHost()) {
+            return null;
         }
 
-        $result->setUri($result->getUri()->withHost($legacyDomain));
-
-        $this->eventDispatcher->dispatch(
-            new LegacyUriMatchPreAvailabilityCheckEvent($result)
-        );
-
-        if (!$result->hasAvailability()) {
-            $result->setAvailable($this->checkLegacyAvailability($result->getUri()));
-        }
+        $result = new UriResult();
+        $result->setUri($uri->withHost($legacyDomain));
 
         return $result;
-    }
-
-    private function checkLegacyAvailability(
-        UriInterface $uri
-    ): bool {
-        try {
-            $response = $this->requestFactory->request((string) $uri, 'HEAD');
-        } catch (Throwable $error) {
-            return false;
-        }
-        $pattern = $this->configuration->getRedirectDomainAvailabilityMatchPattern();
-
-        return 1 === preg_match(
-            '#^'.$pattern.'$#',
-            (string) $response->getStatusCode()
-        );
     }
 }

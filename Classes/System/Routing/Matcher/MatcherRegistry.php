@@ -53,10 +53,12 @@ class MatcherRegistry implements MatcherInterface
         $this->matcher[$priority][] = $matcher;
     }
 
-    public function isMatchableResponse(ResponseInterface $response): bool
-    {
+    public function isMatchableResponse(
+        ResponseInterface $response,
+        ServerRequestInterface $request
+    ): bool {
         foreach ($this->getFlattenMatchers() as $matcher) {
-            if ($matcher->isMatchableResponse($response)) {
+            if ($matcher->isMatchableResponse($response, $request)) {
                 return true;
             }
         }
@@ -69,7 +71,7 @@ class MatcherRegistry implements MatcherInterface
         ResponseInterface $response
     ): UriResult {
         foreach ($this->getFlattenMatchers() as $matcher) {
-            if (!$matcher->isMatchableResponse($response)) {
+            if (!$matcher->isMatchableResponse($response, $request)) {
                 continue;
             }
             $result = $matcher->matchRequest($request, $response);

@@ -29,16 +29,16 @@ declare(strict_types=1);
 
 namespace DMK\Mk30xLegacy\Tests\System\Routing;
 
-use DMK\Mk30xLegacy\System\Event\LegacyUriMatchPreAvailabilityCheckEvent;
+use DMK\Mk30xLegacy\System\Event\UriMatchPreAvailabilityCheckEvent;
 use DMK\Mk30xLegacy\System\Routing\UriResult;
 use DMK\Mk30xLegacy\Tests\BaseUnitTestCase;
 
 /**
- * LegacyUriMatchPreAvailabilityCheckEvent test.
+ * UriMatchPreAvailabilityCheckEvent test.
  *
  * @author Michael Wagner
  */
-class LegacyUriMatchPreAvailabilityCheckEventTest extends BaseUnitTestCase
+class UriMatchPreAvailabilityCheckEventTest extends BaseUnitTestCase
 {
     /**
      * @test
@@ -46,7 +46,7 @@ class LegacyUriMatchPreAvailabilityCheckEventTest extends BaseUnitTestCase
     public function getResult()
     {
         $result = new UriResult();
-        $event = new LegacyUriMatchPreAvailabilityCheckEvent($result);
+        $event = new UriMatchPreAvailabilityCheckEvent($result);
         $this->assertSame($result, $event->getResult());
     }
 }

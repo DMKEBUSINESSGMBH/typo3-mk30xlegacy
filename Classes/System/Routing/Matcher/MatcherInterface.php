@@ -39,7 +39,8 @@ use Psr\Http\Message\ServerRequestInterface;
 interface MatcherInterface
 {
     public function isMatchableResponse(
-        ResponseInterface $response
+        ResponseInterface $response,
+        ServerRequestInterface $request
     ): bool;
 
     public function matchRequest(

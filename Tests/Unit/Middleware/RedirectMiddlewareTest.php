@@ -124,7 +124,10 @@ class RedirectMiddlewareTest extends BaseUnitTestCase
     public function processWithUnmatchedResponse()
     {
         $this->configuration->isEnabled()->willReturn(true)->shouldBeCalledOnce();
-        $this->matcher->isMatchableResponse($this->response->reveal())->willReturn(false)->shouldBeCalledOnce();
+        $this->matcher
+            ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+            ->willReturn(false)
+            ->shouldBeCalledOnce();
         $this->matcher->matchRequest()->shouldNotBeCalled();
         $this->assertSame(
             $this->response->reveal(),
@@ -144,7 +147,10 @@ class RedirectMiddlewareTest extends BaseUnitTestCase
         $this->response->getStatusCode()->willReturn(815)->shouldBeCalledOnce();
 
         $this->configuration->isEnabled()->willReturn(true)->shouldBeCalledOnce();
-        $this->matcher->isMatchableResponse($this->response->reveal())->willReturn(true)->shouldBeCalledOnce();
+        $this->matcher
+            ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+            ->willReturn(true)
+            ->shouldBeCalledOnce();
         $this->matcher->matchRequest($this->request->reveal(), $this->response->reveal())->willReturn($result)->shouldBeCalledOnce();
         $this->configuration->getRedirectResponseStatusCode()->shouldNotBeCalled();
         $this->logger->debug(
@@ -175,7 +181,10 @@ class RedirectMiddlewareTest extends BaseUnitTestCase
         $this->response->getStatusCode()->willReturn(815)->shouldBeCalledOnce();
 
         $this->configuration->isEnabled()->willReturn(true)->shouldBeCalledOnce();
-        $this->matcher->isMatchableResponse($this->response->reveal())->willReturn(true)->shouldBeCalledOnce();
+        $this->matcher
+            ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+            ->willReturn(true)
+            ->shouldBeCalledOnce();
         $this->matcher->matchRequest($this->request->reveal(), $this->response->reveal())->willReturn($result)->shouldBeCalledOnce();
         $this->configuration->getRedirectResponseStatusCode()->willReturn(204)->shouldBeCalledOnce();
         $this->logger->info(

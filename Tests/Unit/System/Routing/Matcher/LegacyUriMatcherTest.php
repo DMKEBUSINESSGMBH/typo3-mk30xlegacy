@@ -30,7 +30,7 @@ declare(strict_types=1);
 namespace DMK\Mk30xLegacy\Tests\System\Routing\Matcher;
 
 use DMK\Mk30xLegacy\Domain\Manager\ConfigurationManager;
-use DMK\Mk30xLegacy\System\Event\LegacyUriMatchPreAvailabilityCheckEvent;
+use DMK\Mk30xLegacy\System\Event\UriMatchPreAvailabilityCheckEvent;
 use DMK\Mk30xLegacy\System\Routing\Matcher\LegacyUriMatcher;
 use DMK\Mk30xLegacy\Tests\BaseUnitTestCase;
 use Prophecy\Argument;
@@ -87,7 +87,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
         $this->request = $this->prophesize(ServerRequestInterface::class);
         $this->request->getUri()->willReturn(new Uri('https://relaunch.dev/foo.html?bar=baz'));
         $this->response = $this->prophesize(ResponseInterface::class);
-        $this->eventDispatcher->dispatch(Argument::type(LegacyUriMatchPreAvailabilityCheckEvent::class))->willReturnArgument();
+        $this->eventDispatcher->dispatch(Argument::type(UriMatchPreAvailabilityCheckEvent::class))->willReturnArgument();
     }
 
     /**
@@ -97,7 +97,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
     {
         $this->configuration->getRedirectDomain()->willReturn('')->shouldBeCalledOnce();
         $this->assertFalse(
-            $this->matcher->isMatchableResponse($this->response->reveal())
+            $this->matcher->isMatchableResponse($this->response->reveal(), $this->request->reveal())
         );
     }
 
@@ -110,7 +110,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
         $this->configuration->getResponseMatchPattern()->willReturn('404')->shouldBeCalledOnce();
         $this->response->getStatusCode()->willReturn(200)->shouldBeCalledOnce();
         $this->assertFalse(
-            $this->matcher->isMatchableResponse($this->response->reveal())
+            $this->matcher->isMatchableResponse($this->response->reveal(), $this->request->reveal())
         );
     }
 
@@ -123,7 +123,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
         $this->configuration->getResponseMatchPattern()->willReturn('404')->shouldBeCalledOnce();
         $this->response->getStatusCode()->willReturn(404)->shouldBeCalledOnce();
         $this->assertTrue(
-            $this->matcher->isMatchableResponse($this->response->reveal())
+            $this->matcher->isMatchableResponse($this->response->reveal(), $this->request->reveal())
         );
     }
 
@@ -138,7 +138,6 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
         $result = $this->matcher->matchRequest($this->request->reveal(), $this->response->reveal());
 
         $this->assertFalse($result->isAvailable());
-        $this->assertSame($this->request->reveal()->getUri(), $result->getUri());
     }
 
     /**

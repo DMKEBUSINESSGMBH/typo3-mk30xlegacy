@@ -81,9 +81,17 @@ class MatcherRegistryTest extends BaseUnitTestCase
      */
     public function isMatchableResponseReturnsFalse()
     {
-        $this->matherP100->isMatchableResponse($this->response->reveal())->willReturn(false)->shouldBeCalledOnce();
-        $this->matherP200->isMatchableResponse($this->response->reveal())->willReturn(false)->shouldBeCalledOnce();
-        $this->assertFalse($this->registry->isMatchableResponse($this->response->reveal()));
+        $this->matherP100
+            ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+            ->willReturn(false)
+            ->shouldBeCalledOnce();
+        $this->matherP200
+            ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+            ->willReturn(false)
+            ->shouldBeCalledOnce();
+        $this->assertFalse(
+            $this->registry->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+        );
     }
 
     /**
@@ -91,9 +99,16 @@ class MatcherRegistryTest extends BaseUnitTestCase
      */
     public function isMatchableResponseReturnsTrueForFirstMatcher()
     {
-        $this->matherP100->isMatchableResponse($this->response->reveal())->willReturn(true)->shouldBeCalledOnce();
-        $this->matherP200->isMatchableResponse($this->response->reveal())->shouldNotBeCalled();
-        $this->assertTrue($this->registry->isMatchableResponse($this->response->reveal()));
+        $this->matherP100
+            ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+            ->willReturn(true)
+            ->shouldBeCalledOnce();
+        $this->matherP200
+            ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+            ->shouldNotBeCalled();
+        $this->assertTrue(
+            $this->registry->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+        );
     }
 
     /**
@@ -101,9 +116,17 @@ class MatcherRegistryTest extends BaseUnitTestCase
      */
     public function isMatchableResponseReturnsTrueForLastMatcher()
     {
-        $this->matherP100->isMatchableResponse($this->response->reveal())->willReturn(false)->shouldBeCalledOnce();
-        $this->matherP200->isMatchableResponse($this->response->reveal())->willReturn(true)->shouldBeCalledOnce();
-        $this->assertTrue($this->registry->isMatchableResponse($this->response->reveal()));
+        $this->matherP100
+            ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+            ->willReturn(false)
+            ->shouldBeCalledOnce();
+        $this->matherP200
+            ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+            ->willReturn(true)
+            ->shouldBeCalledOnce();
+        $this->assertTrue(
+            $this->registry->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+        );
     }
 
     /**
@@ -111,15 +134,20 @@ class MatcherRegistryTest extends BaseUnitTestCase
      */
     public function matchRequestReturnsEmptyResult()
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
-        $this->matherP100->isMatchableResponse($this->response->reveal())->willReturn(false)->shouldBeCalledOnce();
-        $this->matherP200->isMatchableResponse($this->response->reveal())->willReturn(true)->shouldBeCalledOnce();
+        $this->matherP100
+            ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+            ->willReturn(false)
+            ->shouldBeCalledOnce();
         $this->matherP200
-            ->matchRequest($request->reveal(), $this->response->reveal())
+            ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+            ->willReturn(true)
+            ->shouldBeCalledOnce();
+        $this->matherP200
+            ->matchRequest($this->request->reveal(), $this->response->reveal())
             ->willReturn(new UriResult())
             ->shouldBeCalledOnce();
         $this->assertFalse(
-            $this->registry->matchRequest($request->reveal(), $this->response->reveal())->hasAvailability()
+            $this->registry->matchRequest($this->request->reveal(), $this->response->reveal())->hasAvailability()
         );
     }
 
@@ -128,13 +156,14 @@ class MatcherRegistryTest extends BaseUnitTestCase
      */
     public function matchRequestReturnsResultFromFirstMatcher()
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
-
         $resultP100 = $this->prophesize(UriResult::class);
-        $this->matherP100->isMatchableResponse($this->response->reveal())->willReturn(true)->shouldBeCalledOnce();
+        $this->matherP100
+            ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+            ->willReturn(true)
+            ->shouldBeCalledOnce();
         $resultP100->isAvailable()->willReturn(true)->shouldBeCalledOnce();
         $this->matherP100
-            ->matchRequest($request->reveal(), $this->response->reveal())
+            ->matchRequest($this->request->reveal(), $this->response->reveal())
             ->willReturn($resultP100->reveal())
             ->shouldBeCalledOnce();
 
@@ -143,7 +172,7 @@ class MatcherRegistryTest extends BaseUnitTestCase
 
         $this->assertSame(
             $resultP100->reveal(),
-            $this->registry->matchRequest($request->reveal(), $this->response->reveal())
+            $this->registry->matchRequest($this->request->reveal(), $this->response->reveal())
         );
     }
 
@@ -152,22 +181,26 @@ class MatcherRegistryTest extends BaseUnitTestCase
      */
     public function matchRequestReturnsResultFromLastMatcher()
     {
-        $request = $this->prophesize(ServerRequestInterface::class);
-
-        $this->matherP100->isMatchableResponse($this->response->reveal())->willReturn(false)->shouldBeCalledOnce();
+        $this->matherP100
+            ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+            ->willReturn(false)
+            ->shouldBeCalledOnce();
         $this->matherP100->matchRequest()->shouldNotBeCalled();
 
         $resultP200 = $this->prophesize(UriResult::class);
         $resultP200->isAvailable()->willReturn(true)->shouldBeCalledOnce();
-        $this->matherP200->isMatchableResponse($this->response->reveal())->willReturn(true)->shouldBeCalledOnce();
         $this->matherP200
-            ->matchRequest($request->reveal(), $this->response->reveal())
+            ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
+            ->willReturn(true)
+            ->shouldBeCalledOnce();
+        $this->matherP200
+            ->matchRequest($this->request->reveal(), $this->response->reveal())
             ->willReturn($resultP200->reveal())
             ->shouldBeCalledOnce();
 
         $this->assertSame(
             $resultP200->reveal(),
-            $this->registry->matchRequest($request->reveal(), $this->response->reveal())
+            $this->registry->matchRequest($this->request->reveal(), $this->response->reveal())
         );
     }
 }
