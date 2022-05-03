@@ -105,6 +105,11 @@ class ConfigurationManager
         return $this->getAttribute('responseMatchPattern') ?? '[345]\d\d';
     }
 
+    public function getSuffixRemovalSuffixes(): string
+    {
+        return $this->getAttribute('suffixRemovalSuffixes') ?? 'html,htm';
+    }
+
     public function getRedirectDomain(): string
     {
         return $this->getAttribute('redirectDomain') ?? '';
