@@ -60,6 +60,7 @@ class ConfigurationManagerWithSiteTest extends BaseUnitTestCase
         $site->getConfiguration()->willReturn([
             'mk30xlegacy_enabled' => '1',
             'mk30xlegacy_responseMatchPattern' => '4\d\d',
+            'mk30xlegacy_suffixRemovalSuffixes' => 'html',
             'mk30xlegacy_redirectDomain' => 'foo.bar.baz',
             'mk30xlegacy_redirectDomainAvailabilityMatchPattern' => '[123]\d\d',
             'mk30xlegacy_redirectResponseStatusCode' => '302',
@@ -83,6 +84,14 @@ class ConfigurationManagerWithSiteTest extends BaseUnitTestCase
     public function getResponseMatchPattern()
     {
         $this->assertSame('4\d\d', $this->manager->getResponseMatchPattern());
+    }
+
+    /**
+     * @test
+     */
+    public function getSuffixRemovalSuffixes()
+    {
+        $this->assertSame('html', $this->manager->getSuffixRemovalSuffixes());
     }
 
     /**

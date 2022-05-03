@@ -63,6 +63,7 @@ class ConfigurationManagerWithSiteLanguageTest extends BaseUnitTestCase
         $site->getConfiguration()->willReturn([
             'mk30xlegacy_enabled' => '0',
             'mk30xlegacy_responseMatchPattern' => '404',
+            'mk30xlegacy_suffixRemovalSuffixes' => 'html',
             'mk30xlegacy_redirectDomain' => 'f.b.b',
             'mk30xlegacy_redirectDomainAvailabilityMatchPattern' => '200',
             'mk30xlegacy_redirectResponseStatusCode' => '308',
@@ -73,6 +74,7 @@ class ConfigurationManagerWithSiteLanguageTest extends BaseUnitTestCase
         $siteLanguage->toArray()->willReturn([
             'mk30xlegacy_enabled' => '1',
             'mk30xlegacy_responseMatchPattern' => '4\d\d',
+            'mk30xlegacy_suffixRemovalSuffixes' => 'htm',
             'mk30xlegacy_redirectDomain' => 'foo.bar.baz',
             'mk30xlegacy_redirectDomainAvailabilityMatchPattern' => '[123]\d\d',
             'mk30xlegacy_redirectResponseStatusCode' => '302',
@@ -94,6 +96,14 @@ class ConfigurationManagerWithSiteLanguageTest extends BaseUnitTestCase
     public function getResponseMatchPattern()
     {
         $this->assertSame('4\d\d', $this->manager->getResponseMatchPattern());
+    }
+
+    /**
+     * @test
+     */
+    public function getSuffixRemovalSuffixes()
+    {
+        $this->assertSame('htm', $this->manager->getSuffixRemovalSuffixes());
     }
 
     /**

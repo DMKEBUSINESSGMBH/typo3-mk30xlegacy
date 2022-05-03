@@ -15,9 +15,14 @@ if the requested uri was not found at the TYPO3.
 
 * Registers a middleware.
 * Checks the TYPO3 response for unavailable status code.
-* Checks if the request uri is available at the legacy domain   
-  (returns 200 status code on HEAD request).
-* Performs a redirect to the legacy domain.
+* asks matchers for the uri to the new or old source to redirect to
+  * PageTypeSuffixRemovalMatcher:   
+    Checks whether the url has a suffix and whether the url exists without an ending.   
+    (Core SiteMatcher finds the uri or a HEAD request returns 200 status code).
+  * LegacyUriMatcher:   
+    Checks if the request uri is available at the legacy domain   
+    (returns 200 status code on HEAD request).
+* Performs a redirect to the new uri.
 
 ## Installation
 
@@ -45,6 +50,9 @@ Use the _Site Management > Sites_ module to configure the extension.
   Regex to match with current request http response code 
   to perform legacy redirect.
   _(default: [345]\d\d)_
+* **suffixRemovalSuffixes**  
+  Page Type Suffixes: A comma seperated list of suffixes to remove from request uri.
+  _(default: html,htm,xhtml)_
 * **redirectDomain**  
   Redirect Domain: Domain to performe the legacy redirect to.
 * **redirectDomainAvailabilityMatchPattern**  

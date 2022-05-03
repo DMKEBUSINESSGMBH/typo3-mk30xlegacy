@@ -104,6 +104,24 @@ class ConfigurationManagerTest extends BaseUnitTestCase
     /**
      * @test
      */
+    public function getSuffixRemovalSuffixes()
+    {
+        $this->extensionConfiguration->getAttribute('suffixRemovalSuffixes')->willReturn('html')->shouldBeCalledOnce();
+        $this->assertSame('html', $this->manager->getSuffixRemovalSuffixes());
+    }
+
+    /**
+     * @test
+     */
+    public function getSuffixRemovalSuffixesReturnsDefault()
+    {
+        $this->extensionConfiguration->getAttribute('suffixRemovalSuffixes')->willReturn(null)->shouldBeCalledOnce();
+        $this->assertSame('html,htm', $this->manager->getSuffixRemovalSuffixes());
+    }
+
+    /**
+     * @test
+     */
     public function getRedirectDomain()
     {
         $this->extensionConfiguration->getAttribute('redirectDomain')->willReturn('foo.bar')->shouldBeCalledOnce();
