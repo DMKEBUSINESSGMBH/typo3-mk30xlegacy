@@ -4,7 +4,7 @@ Mk 30x Legacy Redirects
 ![TYPO3 compatibility](https://img.shields.io/badge/TYPO3-11.5-orange?maxAge=3600&style=flat-square&logo=typo3)
 [![Latest Stable Version](https://img.shields.io/packagist/v/dmk/mk30xlegacy.svg?maxAge=3600&style=flat-square&logo=composer)](https://packagist.org/packages/dmk/mk30xlegacy)
 [![Total Downloads](https://img.shields.io/packagist/dt/dmk/mk30xlegacy.svg?maxAge=3600&style=flat-square)](https://packagist.org/packages/dmk/mk30xlegacy)
-[![Build Status](https://img.shields.io/github/workflow/status/DMKEBUSINESSGMBH/typo3-mk30xlegacy/PHP%20Checks.svg?maxAge=3600&style=flat-square&logo=github-actions)](https://github.com/DMKEBUSINESSGMBH/typo3-mk30xlegacy/actions?query=workflow%3A%22PHP+Checks%22)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/DMKEBUSINESSGMBH/typo3-mk30xlegacy/phpci.yml?maxAge=3600&style=flat-square&logo=github-actions)](https://github.com/DMKEBUSINESSGMBH/typo3-mk30xlegacy/actions?query=workflow%3A%22PHP+Checks%22)
 [![Code Coverage](https://img.shields.io/badge/coverage-100%25-green?maxAge=3600&style=flat-square&logo=codecov)](https://github.com/DMKEBUSINESSGMBH/typo3-mk30xlegacy/actions?query=workflow%3A%22PHP+Checks%22)
 [![License](https://img.shields.io/packagist/l/dmk/mk30xlegacy.svg?maxAge=3600&style=flat-square&logo=gnu)](https://packagist.org/packages/dmk/mk30xlegacy)
 
