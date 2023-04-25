@@ -39,7 +39,6 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Throwable;
 use TYPO3\CMS\Core\Http\Uri;
 
 /**
@@ -147,7 +146,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
     {
         $this->configuration->getRedirectDomain()->willReturn('old.dev');
         $this->requestFactory->requestAvailability(new Uri('https://old.dev/foo.html?bar=baz'))
-            ->willThrow($this->prophesize(Throwable::class)->reveal())->shouldBeCalledOnce();
+            ->willThrow($this->prophesize(\Throwable::class)->reveal())->shouldBeCalledOnce();
         $this->configuration->getRedirectDomainAvailabilityMatchPattern()->shouldNotBeCalled();
 
         $result = $this->matcher->matchRequest($this->request->reveal(), $this->response->reveal());

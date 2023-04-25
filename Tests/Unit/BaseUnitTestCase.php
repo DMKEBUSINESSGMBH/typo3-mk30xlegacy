@@ -29,7 +29,6 @@ declare(strict_types=1);
 
 namespace DMK\Mk30xLegacy\Tests;
 
-use Closure;
 use Nimut\TestingFramework\TestCase\AbstractTestCase as NimutTestingFrameworkTestCase;
 use Pimple\Container as PimpleContainer;
 use Pimple\Psr11\Container as PimplePsr11Container;
@@ -112,12 +111,12 @@ class BaseUnitTestCase extends NimutTestingFrameworkTestCase
     /**
      * Add an instance to the testing typo3 di container.
      *
-     * @param class-string   $className
-     * @param object|Closure $instanceOrFactory
+     * @param class-string    $className
+     * @param object|\Closure $instanceOrFactory
      */
     protected function addInstance(string $className, $instanceOrFactory): void
     {
-        if (!$instanceOrFactory instanceof Closure) {
+        if (!$instanceOrFactory instanceof \Closure) {
             $instanceOrFactory = fn () => $instanceOrFactory;
         }
         $this->container[$className] = $instanceOrFactory;

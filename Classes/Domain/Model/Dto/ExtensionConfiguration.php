@@ -29,7 +29,6 @@ declare(strict_types=1);
 
 namespace DMK\Mk30xLegacy\Domain\Model\Dto;
 
-use Throwable;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration as Typo3ExtConf;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -53,7 +52,7 @@ class ExtensionConfiguration implements ConfigurationInterface
     {
         try {
             return $this->extensionConfiguration->get('mk30xlegacy', $path);
-        } catch (Throwable $error) {
+        } catch (\Throwable $error) {
             return null;
         }
     }

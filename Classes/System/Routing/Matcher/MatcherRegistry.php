@@ -31,7 +31,6 @@ namespace DMK\Mk30xLegacy\System\Routing\Matcher;
 
 use DMK\Mk30xLegacy\System\Http\RequestFactory;
 use DMK\Mk30xLegacy\System\Routing\UriResult;
-use Generator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -99,9 +98,9 @@ class MatcherRegistry implements MatcherInterface
     }
 
     /**
-     * @return Generator<MatcherInterface>
+     * @return \Generator<MatcherInterface>
      */
-    private function getFlattenMatchers(): Generator
+    private function getFlattenMatchers(): \Generator
     {
         ksort($this->matcher);
 

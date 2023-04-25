@@ -31,7 +31,6 @@ namespace DMK\Mk30xLegacy\Tests\Domain\Model\Dto;
 
 use DMK\Mk30xLegacy\Domain\Model\Dto\ExtensionConfiguration;
 use DMK\Mk30xLegacy\Tests\BaseUnitTestCase;
-use Throwable;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration as Typo3ExtConf;
 
 /**
@@ -72,7 +71,7 @@ class ExtensionConfigurationTest extends BaseUnitTestCase
         $config = new ExtensionConfiguration();
         $this->extensionConfiguration
             ->get('mk30xlegacy', 'config_path')
-            ->willThrow($this->prophesize(Throwable::class)->reveal())
+            ->willThrow($this->prophesize(\Throwable::class)->reveal())
             ->shouldBeCalledOnce();
         $this->assertSame(null, $config->getAttribute('config_path'));
     }
