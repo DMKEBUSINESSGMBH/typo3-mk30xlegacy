@@ -29,11 +29,11 @@ declare(strict_types=1);
 
 namespace DMK\Mk30xLegacy\Tests;
 
-use Nimut\TestingFramework\TestCase\AbstractTestCase as NimutTestingFrameworkTestCase;
 use Pimple\Container as PimpleContainer;
 use Pimple\Psr11\Container as PimplePsr11Container;
 use Prophecy\PhpUnit\ProphecyTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * BaseUnitTestCase class.
@@ -43,11 +43,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @SuppressWarnings(PHPMD.Superglobals)
  * @SuppressWarnings(PHPMD.NumberOfChildren)
  */
-class BaseUnitTestCase extends NimutTestingFrameworkTestCase
+class BaseUnitTestCase extends UnitTestCase
 {
     use ProphecyTrait;
-
-    protected $backup = [];
 
     protected ?PimpleContainer $container = null;
 
@@ -57,46 +55,17 @@ class BaseUnitTestCase extends NimutTestingFrameworkTestCase
 
         $this->setUpContainer();
 
-//        // inject content type repository and manager
-//        $this->addInstance(
-//            Repository::class,
-//            new ContentTypeRepository()
-//        );
-//        $this->addInstance(
-//            Manager::class,
-//            fn (PimpleContainer $container) => new Manager(
-//                $container->offsetGet(Repository::class)
-//            )
-//        );
-
-        // backup TYPO3_CONF_VARS
-        $this->backup['TYPO3_CONF_VARS'] = $GLOBALS['TYPO3_CONF_VARS'];
-
-        // backup timezone and set utc
-        $this->backup['DEFAULT_TIMEZONE'] = date_default_timezone_get();
-        date_default_timezone_set('Etc/UTC');
-
-        // backup execution time and set to 13.04.1975
-        $this->backup['EXEC_TIME'] = $GLOBALS['EXEC_TIME'];
-        $GLOBALS['EXEC_TIME'] = strtotime('13.04.1975');
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        // restore backups
-        if (isset($this->backup['TYPO3_CONF_VARS'])) {
-            $GLOBALS['TYPO3_CONF_VARS'] = $this->backup['TYPO3_CONF_VARS'];
-        }
-        if (isset($this->backup['DEFAULT_TIMEZONE'])) {
-            date_default_timezone_set($this->backup['DEFAULT_TIMEZONE']);
-        }
-        if (isset($this->backup['EXEC_TIME'])) {
-            $GLOBALS['EXEC_TIME'] = $this->backup['EXEC_TIME'];
-        }
-        // clenup general utility from instances and mocks ...
-        GeneralUtility::purgeInstances();
+        //        // inject content type repository and manager
+        //        $this->addInstance(
+        //            Repository::class,
+        //            new ContentTypeRepository()
+        //        );
+        //        $this->addInstance(
+        //            Manager::class,
+        //            fn (PimpleContainer $container) => new Manager(
+        //                $container->offsetGet(Repository::class)
+        //            )
+        //        );
     }
 
     /**
@@ -119,6 +88,7 @@ class BaseUnitTestCase extends NimutTestingFrameworkTestCase
         if (!$instanceOrFactory instanceof \Closure) {
             $instanceOrFactory = fn () => $instanceOrFactory;
         }
+
         $this->container[$className] = $instanceOrFactory;
     }
 }

@@ -48,7 +48,7 @@ class PageTypeSuffixRemovalMatcher extends AbstractMatcher implements MatcherInt
 
     public function isMatchableResponse(
         ResponseInterface $response,
-        ServerRequestInterface $request
+        ServerRequestInterface $request,
     ): bool {
         if ($request->getUri() === $this->getRequestUriWithoutSuffix($request->getUri())) {
             return false;
@@ -76,7 +76,7 @@ class PageTypeSuffixRemovalMatcher extends AbstractMatcher implements MatcherInt
             $this->getConfiguration()->getSuffixRemovalSuffixes(),
             true
         );
-        if (empty($suffixes)) {
+        if ([] === $suffixes) {
             return $uri;
         }
 
@@ -90,7 +90,7 @@ class PageTypeSuffixRemovalMatcher extends AbstractMatcher implements MatcherInt
     }
 
     protected function checkSiteAvailability(
-        ServerRequestInterface $request
+        ServerRequestInterface $request,
     ): bool {
         $routeResult = $this->getSiteMatcher()->matchRequest($request);
         if (!$routeResult instanceof SiteRouteResult) {
@@ -112,18 +112,12 @@ class PageTypeSuffixRemovalMatcher extends AbstractMatcher implements MatcherInt
                 $request,
                 $routeResult
             );
-        } catch (\Throwable $error) {
+        } catch (\Throwable) {
             return false;
         }
 
-        if (
-            $pageArguments instanceof PageArguments
-            && $pageArguments->getPageId()
-            && !$pageArguments->areDirty()
-        ) {
-            return true;
-        }
-
-        return false;
+        return $pageArguments instanceof PageArguments
+        && $pageArguments->getPageId()
+        && !$pageArguments->areDirty();
     }
 }

@@ -43,10 +43,11 @@ use TYPO3\CMS\Core\Site\Entity\Site;
 class ConfigurationManagerWithSiteTest extends BaseUnitTestCase
 {
     private ?ConfigurationManager $manager = null;
+
     /**
      * @var ExtensionConfiguration|\Prophecy\Prophecy\ObjectProphecy|null
      */
-    private $extensionConfiguration = null;
+    private ?\Prophecy\Prophecy\ObjectProphecy $extensionConfiguration = null;
 
     protected function setUp(): void
     {
@@ -73,7 +74,7 @@ class ConfigurationManagerWithSiteTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function isEnabledReturnsTrue()
+    public function isEnabledReturnsTrue(): void
     {
         $this->assertTrue($this->manager->isEnabled());
     }
@@ -81,7 +82,7 @@ class ConfigurationManagerWithSiteTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function getResponseMatchPattern()
+    public function getResponseMatchPattern(): void
     {
         $this->assertSame('4\d\d', $this->manager->getResponseMatchPattern());
     }
@@ -89,7 +90,7 @@ class ConfigurationManagerWithSiteTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function getSuffixRemovalSuffixes()
+    public function getSuffixRemovalSuffixes(): void
     {
         $this->assertSame('html', $this->manager->getSuffixRemovalSuffixes());
     }
@@ -97,7 +98,7 @@ class ConfigurationManagerWithSiteTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function getRedirectDomain()
+    public function getRedirectDomain(): void
     {
         $this->assertSame('foo.bar.baz', $this->manager->getRedirectDomain());
     }
@@ -105,7 +106,7 @@ class ConfigurationManagerWithSiteTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function getRedirectDomainAvailabilityMatchPattern()
+    public function getRedirectDomainAvailabilityMatchPattern(): void
     {
         $this->assertSame('[123]\d\d', $this->manager->getRedirectDomainAvailabilityMatchPattern());
     }
@@ -113,7 +114,7 @@ class ConfigurationManagerWithSiteTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function getRedirectResponseStatusCode()
+    public function getRedirectResponseStatusCode(): void
     {
         $this->assertSame(302, $this->manager->getRedirectResponseStatusCode());
     }

@@ -45,7 +45,8 @@ use TYPO3\CMS\Core\Http\RequestFactory as Typo3RequestFactory;
 class RequestFactoryTest extends BaseUnitTestCase
 {
     private ?RequestFactory $factory = null;
-    private $subFactory = null;
+
+    private ?\Prophecy\Prophecy\ObjectProphecy $subFactory = null;
 
     protected function setUp(): void
     {
@@ -58,7 +59,7 @@ class RequestFactoryTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function createRequest()
+    public function createRequest(): void
     {
         $request = $this->prophesize(RequestInterface::class)->reveal();
         $this->subFactory->createRequest('HEAD', 'https://foo.bar/baz')->willReturn($request)->shouldBeCalledOnce();
@@ -68,7 +69,7 @@ class RequestFactoryTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function requestAvailability()
+    public function requestAvailability(): void
     {
         $response = $this->prophesize(ResponseInterface::class)->reveal();
         $this->subFactory->request(
@@ -86,7 +87,7 @@ class RequestFactoryTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function isAvailabilityRequestReturnsTrue()
+    public function isAvailabilityRequestReturnsTrue(): void
     {
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->hasHeader('x-mk30xlegacy-request')->willReturn(true)->shouldBeCalledOnce();
@@ -96,7 +97,7 @@ class RequestFactoryTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function isAvailabilityRequestReturnsFalse()
+    public function isAvailabilityRequestReturnsFalse(): void
     {
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->hasHeader('x-mk30xlegacy-request')->willReturn(false)->shouldBeCalledOnce();

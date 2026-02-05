@@ -44,12 +44,8 @@ class MatcherRegistry implements MatcherInterface
      */
     private array $matcher = [];
 
-    private RequestFactory $requestFactory;
-
-    public function __construct(
-        RequestFactory $requestFactory
-    ) {
-        $this->requestFactory = $requestFactory;
+    public function __construct(private readonly RequestFactory $requestFactory)
+    {
     }
 
     public function addMatcher(MatcherInterface $matcher, int $priority = 0): void
@@ -63,7 +59,7 @@ class MatcherRegistry implements MatcherInterface
 
     public function isMatchableResponse(
         ResponseInterface $response,
-        ServerRequestInterface $request
+        ServerRequestInterface $request,
     ): bool {
         if ($this->requestFactory->isAvailabilityRequest($request)) {
             return false;
@@ -80,12 +76,13 @@ class MatcherRegistry implements MatcherInterface
 
     public function matchRequest(
         ServerRequestInterface $request,
-        ResponseInterface $response
+        ResponseInterface $response,
     ): UriResult {
         foreach ($this->getFlattenMatchers() as $matcher) {
             if (!$matcher->isMatchableResponse($response, $request)) {
                 continue;
             }
+
             $result = $matcher->matchRequest($request, $response);
 
             // return first available result

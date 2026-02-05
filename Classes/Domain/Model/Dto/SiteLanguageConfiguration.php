@@ -47,7 +47,7 @@ class SiteLanguageConfiguration implements ConfigurationInterface
     {
         $this->data = array_filter(
             $site->toArray(),
-            fn (string $key) => 0 === strpos($key, 'mk30xlegacy_', 0),
+            fn (string $key): bool => str_starts_with($key, 'mk30xlegacy_'),
             ARRAY_FILTER_USE_KEY
         );
     }

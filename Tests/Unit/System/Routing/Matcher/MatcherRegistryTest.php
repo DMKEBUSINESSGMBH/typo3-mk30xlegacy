@@ -46,22 +46,27 @@ use Psr\Http\Message\ServerRequestInterface;
 class MatcherRegistryTest extends BaseUnitTestCase
 {
     private ?MatcherRegistry $registry = null;
+
     /**
      * @var ObjectProphecy|RequestFactory|null
      */
     private ?ObjectProphecy $requestFactory = null;
+
     /**
      * @var ServerRequestInterface|ObjectProphecy|null
      */
     private ?ObjectProphecy $request = null;
+
     /**
      * @var ResponseInterface|ObjectProphecy|null
      */
     private ?ObjectProphecy $response = null;
+
     /**
      * @var MatcherInterface|ObjectProphecy|null
      */
     private ?ObjectProphecy $matherP100 = null;
+
     /**
      * @var MatcherInterface|ObjectProphecy|null
      */
@@ -86,7 +91,7 @@ class MatcherRegistryTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function isMatchableResponseReturnsFalseForAvailabilityRequest()
+    public function isMatchableResponseReturnsFalseForAvailabilityRequest(): void
     {
         $this->requestFactory->isAvailabilityRequest($this->request->reveal())->willReturn(true);
         $this->matherP100
@@ -103,7 +108,7 @@ class MatcherRegistryTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function isMatchableResponseReturnsFalse()
+    public function isMatchableResponseReturnsFalse(): void
     {
         $this->requestFactory->isAvailabilityRequest($this->request->reveal())->willReturn(false);
         $this->matherP100
@@ -122,7 +127,7 @@ class MatcherRegistryTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function isMatchableResponseReturnsTrueForFirstMatcher()
+    public function isMatchableResponseReturnsTrueForFirstMatcher(): void
     {
         $this->requestFactory->isAvailabilityRequest($this->request->reveal())->willReturn(false);
         $this->matherP100
@@ -140,7 +145,7 @@ class MatcherRegistryTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function isMatchableResponseReturnsTrueForLastMatcher()
+    public function isMatchableResponseReturnsTrueForLastMatcher(): void
     {
         $this->requestFactory->isAvailabilityRequest($this->request->reveal())->willReturn(false);
         $this->matherP100
@@ -159,7 +164,7 @@ class MatcherRegistryTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function matchRequestReturnsEmptyResult()
+    public function matchRequestReturnsEmptyResult(): void
     {
         $this->matherP100
             ->isMatchableResponse($this->response->reveal(), $this->request->reveal())
@@ -181,7 +186,7 @@ class MatcherRegistryTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function matchRequestReturnsResultFromFirstMatcher()
+    public function matchRequestReturnsResultFromFirstMatcher(): void
     {
         $resultP100 = $this->prophesize(UriResult::class);
         $this->matherP100
@@ -206,7 +211,7 @@ class MatcherRegistryTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function matchRequestReturnsResultFromLastMatcher()
+    public function matchRequestReturnsResultFromLastMatcher(): void
     {
         $this->matherP100
             ->isMatchableResponse($this->response->reveal(), $this->request->reveal())

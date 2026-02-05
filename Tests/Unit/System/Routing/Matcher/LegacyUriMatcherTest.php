@@ -49,22 +49,27 @@ use TYPO3\CMS\Core\Http\Uri;
 class LegacyUriMatcherTest extends BaseUnitTestCase
 {
     private ?LegacyUriMatcher $matcher = null;
+
     /**
      * @var ConfigurationManager|ObjectProphecy|null
      */
     private ?ObjectProphecy $configuration = null;
+
     /**
      * @var ObjectProphecy|RequestFactory|null
      */
     private ?ObjectProphecy $requestFactory = null;
+
     /**
      * @var ObjectProphecy|EventDispatcherInterface|null
      */
     private ?ObjectProphecy $eventDispatcher = null;
+
     /**
      * @var ObjectProphecy|ServerRequestInterface|null
      */
     private ?ObjectProphecy $request = null;
+
     /**
      * @var ObjectProphecy|ResponseInterface|null
      */
@@ -92,7 +97,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function isMatchableResponseForMissingDomainConfig()
+    public function isMatchableResponseForMissingDomainConfig(): void
     {
         $this->configuration->getRedirectDomain()->willReturn('')->shouldBeCalledOnce();
         $this->assertFalse(
@@ -103,7 +108,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function isMatchableResponseForWrongStatusCode()
+    public function isMatchableResponseForWrongStatusCode(): void
     {
         $this->configuration->getRedirectDomain()->willReturn('foo.bar')->shouldBeCalledOnce();
         $this->configuration->getResponseMatchPattern()->willReturn('404')->shouldBeCalledOnce();
@@ -116,7 +121,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function isMatchableResponseForCorrectStatusCode()
+    public function isMatchableResponseForCorrectStatusCode(): void
     {
         $this->configuration->getRedirectDomain()->willReturn('foo.bar')->shouldBeCalledOnce();
         $this->configuration->getResponseMatchPattern()->willReturn('404')->shouldBeCalledOnce();
@@ -129,7 +134,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function matchRequestForSameDomain()
+    public function matchRequestForSameDomain(): void
     {
         $this->configuration->getRedirectDomain()->willReturn('relaunch.dev');
         $this->requestFactory->requestAvailability()->shouldNotBeCalled();
@@ -142,7 +147,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function matchRequestForUnavailable()
+    public function matchRequestForUnavailable(): void
     {
         $this->configuration->getRedirectDomain()->willReturn('old.dev');
         $this->requestFactory->requestAvailability(new Uri('https://old.dev/foo.html?bar=baz'))
@@ -158,7 +163,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function matchRequestForAvailableButUnmatchedStatusPattern()
+    public function matchRequestForAvailableButUnmatchedStatusPattern(): void
     {
         $this->configuration->getRedirectDomain()->willReturn('old.dev');
         $subResponse = $this->prophesize(ResponseInterface::class);
@@ -176,7 +181,7 @@ class LegacyUriMatcherTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function matchRequestForAvailableWithMatchedStatusPattern()
+    public function matchRequestForAvailableWithMatchedStatusPattern(): void
     {
         $this->configuration->getRedirectDomain()->willReturn('old.dev');
         $subResponse = $this->prophesize(ResponseInterface::class);

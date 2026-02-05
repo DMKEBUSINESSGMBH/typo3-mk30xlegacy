@@ -52,7 +52,7 @@ class ExtensionConfiguration implements ConfigurationInterface
     {
         try {
             return $this->extensionConfiguration->get('mk30xlegacy', $path);
-        } catch (\Throwable $error) {
+        } catch (\Throwable) {
             return null;
         }
     }

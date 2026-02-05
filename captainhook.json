@@ -1,5 +1,6 @@
 {
     "config": {
+        "vendor-directory": ".Build/vendor",
         "bootstrap": ".Build/vendor/autoload.php"
     },
     "commit-msg": {
@@ -11,8 +12,8 @@
             {
                 "action": "\\CaptainHook\\App\\Hook\\Message\\Action\\Regex",
                 "options": {
-                    "regex": "#(^Cleanup .*|^Bugfix .*|^Version .*)|\\#\\d+#i",
-                    "error": "Commit message has to contain #111 or has to start with 'Cleanup', 'Bugfix' or 'Version'"
+                    "regex": "#^(Cleanup|Bugfix|Version|Task) .*#i",
+                    "error": "Commit message has to start with 'Task' or 'Cleanup' or 'Bugfix' or 'Version'"
                 }
             }
         ]
@@ -21,19 +22,9 @@
         "enabled": true,
         "actions": [
             {
-                "action": "composer test:phpcs"
-            },
-            {
-                "action": "composer test:phpmd"
-            },
-            {
-                "action": "composer test:phpstan"
-            },
-            {
-                "action": "composer test:phpcpd"
-            },
-            {
-                "action": "composer test:phpunit"
+                "action": "composer test",
+                "options": [],
+                "conditions": []
             }
         ]
     },
@@ -41,13 +32,9 @@
         "enabled": true,
         "actions": [
             {
-                "action": "composer lint:php"
-            },
-            {
-                "action": "composer lint:yaml"
-            },
-            {
-                "action": "composer lint:typoscript"
+                "action": "composer lint",
+                "options": [],
+                "conditions": []
             }
         ]
     },

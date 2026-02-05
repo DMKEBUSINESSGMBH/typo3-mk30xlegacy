@@ -52,26 +52,32 @@ use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 class RedirectMiddlewareTest extends BaseUnitTestCase
 {
     private ?RedirectMiddleware $middleware = null;
+
     /**
      * @var MatcherRegistry|ObjectProphecy|null
      */
     private ?ObjectProphecy $matcher = null;
+
     /**
      * @var ObjectProphecy|ConfigurationManager|null
      */
     private ?ObjectProphecy $configuration = null;
+
     /**
      * @var ObjectProphecy|LoggerInterface|null
      */
     private ?ObjectProphecy $logger = null;
+
     /**
      * @var ObjectProphecy|ServerRequestInterface|null
      */
     private ?ObjectProphecy $request = null;
+
     /**
      * @var ObjectProphecy|ResponseInterface|null
      */
     private ?ObjectProphecy $response = null;
+
     /**
      * @var ObjectProphecy|RequestHandlerInterface|null
      */
@@ -108,7 +114,7 @@ class RedirectMiddlewareTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function processWithDisabledConfig()
+    public function processWithDisabledConfig(): void
     {
         $this->configuration->isEnabled()->willReturn(false)->shouldBeCalledOnce();
         $this->matcher->matchRequest()->shouldNotBeCalled();
@@ -121,7 +127,7 @@ class RedirectMiddlewareTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function processWithUnmatchedResponse()
+    public function processWithUnmatchedResponse(): void
     {
         $this->configuration->isEnabled()->willReturn(true)->shouldBeCalledOnce();
         $this->matcher
@@ -138,7 +144,7 @@ class RedirectMiddlewareTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function processWithMatchedButUnavailableResponse()
+    public function processWithMatchedButUnavailableResponse(): void
     {
         $result = new UriResult();
         $result->setAvailable(false);
@@ -171,7 +177,7 @@ class RedirectMiddlewareTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function processWithMatchedAndAvailableResponse()
+    public function processWithMatchedAndAvailableResponse(): void
     {
         $result = new UriResult();
         $result->setAvailable(true);

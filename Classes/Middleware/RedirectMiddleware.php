@@ -50,15 +50,8 @@ class RedirectMiddleware implements MiddlewareInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    private MatcherRegistry $matcher;
-    private ConfigurationManager $configuration;
-
-    public function __construct(
-        MatcherRegistry $matcher,
-        ConfigurationManager $configuration
-    ) {
-        $this->matcher = $matcher;
-        $this->configuration = $configuration;
+    public function __construct(private MatcherRegistry $matcher, private ConfigurationManager $configuration)
+    {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -69,6 +62,7 @@ class RedirectMiddleware implements MiddlewareInterface, LoggerAwareInterface
         if ($site instanceof Site) {
             $this->configuration->addSiteConfiguration($site);
         }
+
         $language = $request->getAttribute('language');
         if ($language instanceof SiteLanguage) {
             $this->configuration->addSiteLanguageConfiguration($language);
@@ -84,7 +78,7 @@ class RedirectMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
         $result = $this->matcher->matchRequest($request, $response);
         if ($result->isAvailable()) {
-            if (null !== $this->logger) {
+            if ($this->logger instanceof \Psr\Log\LoggerInterface) {
                 $this->logger->info(
                     'Available and matchable legacy redirect response found.',
                     [
@@ -103,7 +97,7 @@ class RedirectMiddleware implements MiddlewareInterface, LoggerAwareInterface
             );
         }
 
-        if (null !== $this->logger) {
+        if ($this->logger instanceof \Psr\Log\LoggerInterface) {
             $this->logger->debug(
                 'No available legacy found for matchable legacy redirect response.',
                 [

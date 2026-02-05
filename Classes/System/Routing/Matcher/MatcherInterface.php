@@ -40,11 +40,11 @@ interface MatcherInterface
 {
     public function isMatchableResponse(
         ResponseInterface $response,
-        ServerRequestInterface $request
+        ServerRequestInterface $request,
     ): bool;
 
     public function matchRequest(
         ServerRequestInterface $request,
-        ResponseInterface $response
+        ResponseInterface $response,
     ): UriResult;
 }

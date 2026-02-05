@@ -43,12 +43,8 @@ use TYPO3\CMS\Core\Http\RequestFactory as Typo3RequestFactory;
  */
 class RequestFactory implements RequestFactoryInterface
 {
-    private Typo3RequestFactory $requestFactory;
-
-    public function __construct(
-        Typo3RequestFactory $requestFactory
-    ) {
-        $this->requestFactory = $requestFactory;
+    public function __construct(private readonly Typo3RequestFactory $requestFactory)
+    {
     }
 
     public function createRequest(string $method, $uri): RequestInterface
@@ -57,7 +53,7 @@ class RequestFactory implements RequestFactoryInterface
     }
 
     public function requestAvailability(
-        UriInterface $uri
+        UriInterface $uri,
     ): ResponseInterface {
         return $this->requestFactory->request(
             (string) $uri,

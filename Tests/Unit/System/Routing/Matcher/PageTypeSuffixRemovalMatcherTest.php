@@ -59,26 +59,32 @@ use TYPO3\CMS\Core\Site\Entity\SiteInterface;
 class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
 {
     private ?PageTypeSuffixRemovalMatcher $matcher = null;
+
     /**
      * @var ConfigurationManager|ObjectProphecy|null
      */
     private ?ObjectProphecy $configuration = null;
+
     /**
      * @var ObjectProphecy|RequestFactory|null
      */
     private ?ObjectProphecy $requestFactory = null;
+
     /**
      * @var ObjectProphecy|EventDispatcherInterface|null
      */
     private ?ObjectProphecy $eventDispatcher = null;
+
     /**
      * @var ObjectProphecy|SiteMatcher|null
      */
     private ?ObjectProphecy $siteMatcher = null;
+
     /**
      * @var ObjectProphecy|ServerRequestInterface|null
      */
     private ?ObjectProphecy $request = null;
+
     /**
      * @var ObjectProphecy|ResponseInterface|null
      */
@@ -91,14 +97,14 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
         $this->configuration = $this->prophesize(ConfigurationManager::class);
         $this->requestFactory = $this->prophesize(RequestFactory::class);
         $this->eventDispatcher = $this->prophesize(EventDispatcherInterface::class);
-        $this->matcher = new PageTypeSuffixRemovalMatcher(
+        $this->matcher = new ($this->buildAccessibleProxy(PageTypeSuffixRemovalMatcher::class))(
             $this->configuration->reveal(),
             $this->requestFactory->reveal(),
             $this->eventDispatcher->reveal()
         );
 
         $this->siteMatcher = $this->prophesize(SiteMatcher::class);
-        $this->inject($this->matcher, 'siteMatcher', $this->siteMatcher->reveal());
+        $this->matcher->_set('siteMatcher', $this->siteMatcher->reveal());
 
         $this->request = $this->prophesize(ServerRequestInterface::class);
         $this->request->getUri()->willReturn(new Uri('https://relaunch.dev/foo.html?bar=baz'));
@@ -109,7 +115,7 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function isMatchableResponseForMissingSuffixConfig()
+    public function isMatchableResponseForMissingSuffixConfig(): void
     {
         $this->configuration->getSuffixRemovalSuffixes()->willReturn('')->shouldBeCalledOnce();
         $this->configuration->getResponseMatchPattern()->shouldNotBeCalled();
@@ -121,7 +127,7 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function isMatchableResponseForUnknownSuffix()
+    public function isMatchableResponseForUnknownSuffix(): void
     {
         $this->configuration->getSuffixRemovalSuffixes()->willReturn('xml')->shouldBeCalledOnce();
         $this->configuration->getResponseMatchPattern()->shouldNotBeCalled();
@@ -133,7 +139,7 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function isMatchableResponseForMatchingSuffix()
+    public function isMatchableResponseForMatchingSuffix(): void
     {
         $this->configuration->getSuffixRemovalSuffixes()->willReturn('html')->shouldBeCalledOnce();
         $this->configuration->getResponseMatchPattern()->willReturn('404')->shouldBeCalledOnce();
@@ -146,7 +152,7 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function createResultForRequestForMissingSiteRouteResult()
+    public function createResultForRequestForMissingSiteRouteResult(): void
     {
         $checkerRequest = $this->prophesize(ServerRequestInterface::class);
 
@@ -162,8 +168,7 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
             ->shouldBeCalledOnce();
 
         /* @var $result UriResult */
-        $result = $this->callInaccessibleMethod(
-            $this->matcher,
+        $result = $this->matcher->_call(
             'createResultForRequest',
             $this->request->reveal(),
             $this->response->reveal()
@@ -176,7 +181,7 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function createResultForRequestForNoSite()
+    public function createResultForRequestForNoSite(): void
     {
         $checkerRequest = $this->prophesize(ServerRequestInterface::class);
 
@@ -198,8 +203,7 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
         $checkerRequest->withAttribute()->shouldNotBeCalled();
 
         /* @var $result UriResult */
-        $result = $this->callInaccessibleMethod(
-            $this->matcher,
+        $result = $this->matcher->_call(
             'createResultForRequest',
             $this->request->reveal(),
             $this->response->reveal()
@@ -212,7 +216,7 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function createResultForRequestForNoPage()
+    public function createResultForRequestForNoPage(): void
     {
         $checkerRequest = $this->prophesize(ServerRequestInterface::class);
 
@@ -257,8 +261,7 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
         )->willThrow('Exception');
 
         /* @var $result UriResult */
-        $result = $this->callInaccessibleMethod(
-            $this->matcher,
+        $result = $this->matcher->_call(
             'createResultForRequest',
             $this->request->reveal(),
             $this->response->reveal()
@@ -271,7 +274,7 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function createResultForRequestForNoPageArguments()
+    public function createResultForRequestForNoPageArguments(): void
     {
         $checkerRequest = $this->prophesize(ServerRequestInterface::class);
 
@@ -316,8 +319,7 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
         )->willReturn($this->prophesize(RouteResultInterface::class)->reveal());
 
         /* @var $result UriResult */
-        $result = $this->callInaccessibleMethod(
-            $this->matcher,
+        $result = $this->matcher->_call(
             'createResultForRequest',
             $this->request->reveal(),
             $this->response->reveal()
@@ -330,7 +332,7 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function createResultForRequestForNoPageId()
+    public function createResultForRequestForNoPageId(): void
     {
         $checkerRequest = $this->prophesize(ServerRequestInterface::class);
 
@@ -378,8 +380,7 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
         )->willReturn($pageArguments->reveal());
 
         /* @var $result UriResult */
-        $result = $this->callInaccessibleMethod(
-            $this->matcher,
+        $result = $this->matcher->_call(
             'createResultForRequest',
             $this->request->reveal(),
             $this->response->reveal()
@@ -392,7 +393,7 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function createResultForRequestForNoDirtyPageArguments()
+    public function createResultForRequestForNoDirtyPageArguments(): void
     {
         $checkerRequest = $this->prophesize(ServerRequestInterface::class);
 
@@ -441,8 +442,7 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
         )->willReturn($pageArguments->reveal());
 
         /* @var $result UriResult */
-        $result = $this->callInaccessibleMethod(
-            $this->matcher,
+        $result = $this->matcher->_call(
             'createResultForRequest',
             $this->request->reveal(),
             $this->response->reveal()
@@ -455,7 +455,7 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function createResultForRequest()
+    public function createResultForRequest(): void
     {
         $checkerRequest = $this->prophesize(ServerRequestInterface::class);
 
@@ -504,8 +504,7 @@ class PageTypeSuffixRemovalMatcherTest extends BaseUnitTestCase
         )->willReturn($pageArguments->reveal());
 
         /* @var $result UriResult */
-        $result = $this->callInaccessibleMethod(
-            $this->matcher,
+        $result = $this->matcher->_call(
             'createResultForRequest',
             $this->request->reveal(),
             $this->response->reveal()

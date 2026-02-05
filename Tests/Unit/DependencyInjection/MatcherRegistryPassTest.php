@@ -46,14 +46,16 @@ use Symfony\Component\DependencyInjection\Reference;
 class MatcherRegistryPassTest extends BaseUnitTestCase
 {
     private ?MatcherRegistryPass $pass = null;
+
     /**
      * @var ObjectProphecy|ContainerBuilder|null
      */
-    private $containerBuilder = null;
+    private ?ObjectProphecy $containerBuilder = null;
+
     /**
      * @var ObjectProphecy|Definition|null
      */
-    private $definition = null;
+    private ?ObjectProphecy $definition = null;
 
     protected function setUp(): void
     {
@@ -68,7 +70,7 @@ class MatcherRegistryPassTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function process()
+    public function process(): void
     {
         $taggedServices = [
             'LegacyUriMatcher' => [['priority' => 200]],
@@ -85,14 +87,14 @@ class MatcherRegistryPassTest extends BaseUnitTestCase
                 new Reference('LegacyUriMatcher'),
                 200,
             ]
-        )->shouldBeCalledOnce();
+        )->shouldBeCalledOnce()->willReturn($this->definition);
         $this->definition->addMethodCall(
             'addMatcher',
             [
                 new Reference('SuffixRemovalMatcher'),
                 100,
             ]
-        )->shouldBeCalledOnce();
+        )->shouldBeCalledOnce()->willReturn($this->definition);
 
         $this->pass->process($this->containerBuilder->reveal());
     }
@@ -100,7 +102,7 @@ class MatcherRegistryPassTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function processWithoutRegistry()
+    public function processWithoutRegistry(): void
     {
         $this->containerBuilder->has(MatcherRegistry::class)->willReturn(false);
         $this->containerBuilder->findDefinition()->shouldNotBeCalled();

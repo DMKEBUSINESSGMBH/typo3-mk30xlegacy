@@ -43,7 +43,7 @@ class UriResultTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function setUriAndGetUri()
+    public function setUriAndGetUri(): void
     {
         $uri = $this->prophesize(UriInterface::class)->reveal();
         $result = new UriResult();
@@ -54,7 +54,7 @@ class UriResultTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function setAvailableAndIsAvailable()
+    public function setAvailableAndIsAvailable(): void
     {
         $result = new UriResult();
         // initially, available is null and should be false

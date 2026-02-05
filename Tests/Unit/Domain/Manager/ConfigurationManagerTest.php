@@ -41,10 +41,11 @@ use DMK\Mk30xLegacy\Tests\BaseUnitTestCase;
 class ConfigurationManagerTest extends BaseUnitTestCase
 {
     private ?ConfigurationManager $manager = null;
+
     /**
      * @var ExtensionConfiguration|\Prophecy\Prophecy\ObjectProphecy|null
      */
-    private $extensionConfiguration = null;
+    private ?\Prophecy\Prophecy\ObjectProphecy $extensionConfiguration = null;
 
     protected function setUp(): void
     {
@@ -59,7 +60,7 @@ class ConfigurationManagerTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function isEnabledReturnsTrue()
+    public function isEnabledReturnsTrue(): void
     {
         $this->extensionConfiguration->getAttribute('enabled')->willReturn('1')->shouldBeCalledOnce();
         $this->assertTrue($this->manager->isEnabled());
@@ -68,7 +69,7 @@ class ConfigurationManagerTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function isEnabledReturnsFalse()
+    public function isEnabledReturnsFalse(): void
     {
         $this->extensionConfiguration->getAttribute('enabled')->willReturn('0')->shouldBeCalledOnce();
         $this->assertfalse($this->manager->isEnabled());
@@ -77,7 +78,7 @@ class ConfigurationManagerTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function isEnabledReturnsFalseByDefault()
+    public function isEnabledReturnsFalseByDefault(): void
     {
         $this->extensionConfiguration->getAttribute('enabled')->willReturn(null)->shouldBeCalledOnce();
         $this->assertfalse($this->manager->isEnabled());
@@ -86,7 +87,7 @@ class ConfigurationManagerTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function getResponseMatchPattern()
+    public function getResponseMatchPattern(): void
     {
         $this->extensionConfiguration->getAttribute('responseMatchPattern')->willReturn('[45]\d\d')->shouldBeCalledOnce();
         $this->assertSame('[45]\d\d', $this->manager->getResponseMatchPattern());
@@ -95,7 +96,7 @@ class ConfigurationManagerTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function getResponseMatchPatternReturnsDefault()
+    public function getResponseMatchPatternReturnsDefault(): void
     {
         $this->extensionConfiguration->getAttribute('responseMatchPattern')->willReturn(null)->shouldBeCalledOnce();
         $this->assertSame('[345]\d\d', $this->manager->getResponseMatchPattern());
@@ -104,7 +105,7 @@ class ConfigurationManagerTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function getSuffixRemovalSuffixes()
+    public function getSuffixRemovalSuffixes(): void
     {
         $this->extensionConfiguration->getAttribute('suffixRemovalSuffixes')->willReturn('html')->shouldBeCalledOnce();
         $this->assertSame('html', $this->manager->getSuffixRemovalSuffixes());
@@ -113,7 +114,7 @@ class ConfigurationManagerTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function getSuffixRemovalSuffixesReturnsDefault()
+    public function getSuffixRemovalSuffixesReturnsDefault(): void
     {
         $this->extensionConfiguration->getAttribute('suffixRemovalSuffixes')->willReturn(null)->shouldBeCalledOnce();
         $this->assertSame('html,htm', $this->manager->getSuffixRemovalSuffixes());
@@ -122,7 +123,7 @@ class ConfigurationManagerTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function getRedirectDomain()
+    public function getRedirectDomain(): void
     {
         $this->extensionConfiguration->getAttribute('redirectDomain')->willReturn('foo.bar')->shouldBeCalledOnce();
         $this->assertSame('foo.bar', $this->manager->getRedirectDomain());
@@ -131,7 +132,7 @@ class ConfigurationManagerTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function getRedirectDomainReturnsDefault()
+    public function getRedirectDomainReturnsDefault(): void
     {
         $this->extensionConfiguration->getAttribute('redirectDomain')->willReturn(null)->shouldBeCalledOnce();
         $this->assertSame('', $this->manager->getRedirectDomain());
@@ -140,7 +141,7 @@ class ConfigurationManagerTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function getRedirectDomainAvailabilityMatchPattern()
+    public function getRedirectDomainAvailabilityMatchPattern(): void
     {
         $this->extensionConfiguration->getAttribute('redirectDomainAvailabilityMatchPattern')->willReturn('[12]\d\d')->shouldBeCalledOnce();
         $this->assertSame('[12]\d\d', $this->manager->getRedirectDomainAvailabilityMatchPattern());
@@ -149,7 +150,7 @@ class ConfigurationManagerTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function getRedirectDomainAvailabilityMatchPatternReturnsDefault()
+    public function getRedirectDomainAvailabilityMatchPatternReturnsDefault(): void
     {
         $this->extensionConfiguration->getAttribute('redirectDomainAvailabilityMatchPattern')->willReturn(null)->shouldBeCalledOnce();
         $this->assertSame('2\d\d', $this->manager->getRedirectDomainAvailabilityMatchPattern());
@@ -158,7 +159,7 @@ class ConfigurationManagerTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function getRedirectResponseStatusCode()
+    public function getRedirectResponseStatusCode(): void
     {
         $this->extensionConfiguration->getAttribute('redirectResponseStatusCode')->willReturn(308)->shouldBeCalledOnce();
         $this->assertSame(308, $this->manager->getRedirectResponseStatusCode());
@@ -167,7 +168,7 @@ class ConfigurationManagerTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function getRedirectResponseStatusCodeReturnsDefault()
+    public function getRedirectResponseStatusCodeReturnsDefault(): void
     {
         $this->extensionConfiguration->getAttribute('redirectResponseStatusCode')->willReturn(null)->shouldBeCalledOnce();
         $this->assertSame(307, $this->manager->getRedirectResponseStatusCode());

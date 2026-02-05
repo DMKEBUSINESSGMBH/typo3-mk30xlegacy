@@ -43,18 +43,11 @@ use Psr\Http\Message\UriInterface;
  */
 abstract class AbstractMatcher implements MatcherInterface
 {
-    private ConfigurationManager $configuration;
-    private RequestFactory $requestFactory;
-    private EventDispatcherInterface $eventDispatcher;
-
     public function __construct(
-        ConfigurationManager $configuration,
-        RequestFactory $requestFactory,
-        EventDispatcherInterface $eventDispatcher
+        private readonly ConfigurationManager $configuration,
+        private readonly RequestFactory $requestFactory,
+        private readonly EventDispatcherInterface $eventDispatcher,
     ) {
-        $this->configuration = $configuration;
-        $this->requestFactory = $requestFactory;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function getConfiguration(): ConfigurationManager
@@ -64,7 +57,7 @@ abstract class AbstractMatcher implements MatcherInterface
 
     public function isMatchableResponse(
         ResponseInterface $response,
-        ServerRequestInterface $request
+        ServerRequestInterface $request,
     ): bool {
         $pattern = $this->getConfiguration()->getResponseMatchPattern();
 
@@ -76,11 +69,11 @@ abstract class AbstractMatcher implements MatcherInterface
 
     public function matchRequest(
         ServerRequestInterface $request,
-        ResponseInterface $response
+        ResponseInterface $response,
     ): UriResult {
         $result = $this->createResultForRequest($request, $response);
 
-        if (null === $result) {
+        if (!$result instanceof UriResult) {
             $result = new UriResult();
             $result->setAvailable(false);
 
@@ -105,17 +98,18 @@ abstract class AbstractMatcher implements MatcherInterface
      */
     abstract protected function createResultForRequest(
         ServerRequestInterface $request,
-        ResponseInterface $response
+        ResponseInterface $response,
     ): ?UriResult;
 
     protected function checkLegacyAvailability(
-        UriInterface $uri
+        UriInterface $uri,
     ): bool {
         try {
             $response = $this->requestFactory->requestAvailability($uri);
-        } catch (\Throwable $error) {
+        } catch (\Throwable) {
             return false;
         }
+
         $pattern = $this->getConfiguration()->getRedirectDomainAvailabilityMatchPattern();
 
         return 1 === preg_match(

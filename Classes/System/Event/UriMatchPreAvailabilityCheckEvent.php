@@ -36,11 +36,8 @@ use DMK\Mk30xLegacy\System\Routing\UriResult;
  */
 final class UriMatchPreAvailabilityCheckEvent
 {
-    private UriResult $result;
-
-    public function __construct(UriResult $result)
+    public function __construct(private readonly UriResult $result)
     {
-        $this->result = $result;
     }
 
     public function getResult(): UriResult

@@ -40,11 +40,11 @@ class LegacyUriMatcher extends AbstractMatcher implements MatcherInterface
 {
     public function isMatchableResponse(
         ResponseInterface $response,
-        ServerRequestInterface $request
+        ServerRequestInterface $request,
     ): bool {
         $legacyDomain = $this->getConfiguration()->getRedirectDomain();
 
-        if (empty($legacyDomain)) {
+        if ('' === $legacyDomain || '0' === $legacyDomain) {
             return false;
         }
 

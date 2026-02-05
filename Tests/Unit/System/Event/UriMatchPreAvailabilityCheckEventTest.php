@@ -43,7 +43,7 @@ class UriMatchPreAvailabilityCheckEventTest extends BaseUnitTestCase
     /**
      * @test
      */
-    public function getResult()
+    public function getResult(): void
     {
         $result = new UriResult();
         $event = new UriMatchPreAvailabilityCheckEvent($result);

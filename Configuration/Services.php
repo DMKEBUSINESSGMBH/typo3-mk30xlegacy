@@ -32,6 +32,6 @@ namespace DMK\Mk30xLegacy;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return function (ContainerConfigurator $container, ContainerBuilder $containerBuilder) {
+return function (ContainerConfigurator $container, ContainerBuilder $containerBuilder): void {
     $containerBuilder->addCompilerPass(new DependencyInjection\MatcherRegistryPass());
 };

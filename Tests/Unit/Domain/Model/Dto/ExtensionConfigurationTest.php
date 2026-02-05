@@ -40,7 +40,7 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration as Typo3ExtConf;
  */
 class ExtensionConfigurationTest extends BaseUnitTestCase
 {
-    private $extensionConfiguration = null;
+    private ?\Prophecy\Prophecy\ObjectProphecy $extensionConfiguration = null;
 
     protected function setUp(): void
     {
